@@ -27,6 +27,10 @@ urlpatterns = [
     # Reviews
     path('review/add/<int:product_id>/', views.add_review, name='add_review'),
 
+    # Checkout
+    path('checkout/', views.checkout_view, name='checkout'),
+    path('order/confirmation/<str:order_number>/', views.order_confirmation, name='order_confirmation'),
+
     # Orders
     path('orders/', views.order_history, name='order_history'),
     path('orders/<str:order_number>/', views.order_detail, name='order_detail'),

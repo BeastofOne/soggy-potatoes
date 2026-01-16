@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Confirmed - Soggy Potatoes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Success Header -->
+            <div class="text-center mb-5">
+                <div class="mb-4">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                </div>
+                <h1 class="display-5 fw-bold text-success">Order Confirmed!</h1>
+                <p class="lead text-muted">Thank you for your order, {{ order.shipping_name }}!</p>
+                <p class="mb-0">
+                    <span class="badge bg-primary fs-6">Order #{{ order.order_number }}</span>
+                </p>
+            </div>
+
+            <!-- Order Details Card -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-receipt"></i> Order Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-2">Order Information</h6>
+                            <p class="mb-1"><strong>Order Number:</strong> {{ order.order_number }}</p>
+                            <p class="mb-1"><strong>Order Date:</strong> {{ order.created_at|date:"F d, Y" }}</p>
+                            <p class="mb-0"><strong>Status:</strong>
+                                <span class="badge bg-warning text-dark">{{ order.get_status_display }}</span>
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-2">Shipping To</h6>
+                            <p class="mb-1">{{ order.shipping_name }}</p>
+                            <p class="mb-1">{{ order.shipping_address }}</p>
+                            <p class="mb-0">{{ order.shipping_city }}, {{ order.shipping_state }} {{ order.shipping_zip }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-bag"></i> Items Ordered</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-borderless mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Product</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-end">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.items.all %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        {% if item.product and item.product.image %}
+                                            <img src="{{ item.product.image.url }}" alt="{{ item.product_name }}"
+                                                 class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center"
+                                                 style="width: 60px; height: 60px;">
+                                                <i class="bi bi-image text-muted"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div>
+                                            {% if item.product %}
+                                                <a href="{{ item.product.get_absolute_url }}" class="text-decoration-none">
+                                                    {{ item.product_name }}
+                                                </a>
+                                            {% else %}
+                                                {{ item.product_name }}
+                                            {% endif %}
+                                            <br>
+                                            <small class="text-muted">${{ item.product_price }} each</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center align-middle">{{ item.quantity }}</td>
+                                <td class="text-end align-middle">${{ item.total_price }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr>
+                                <td colspan="2" class="text-end">Subtotal</td>
+                                <td class="text-end">${{ order.subtotal }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-end">Shipping</td>
+                                <td class="text-end">{% if order.shipping_cost == 0 %}Free{% else %}${{ order.shipping_cost }}{% endif %}</td>
+                            </tr>
+                            {% if order.tax > 0 %}
+                            <tr>
+                                <td colspan="2" class="text-end">Tax</td>
+                                <td class="text-end">${{ order.tax }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <td colspan="2" class="text-end"><strong>Total</strong></td>
+                                <td class="text-end"><strong class="text-primary fs-5">${{ order.total }}</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- What's Next -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-info-circle"></i> What's Next?</h5>
+                    <ul class="mb-0">
+                        <li>A confirmation email has been sent to <strong>{{ order.email }}</strong></li>
+                        <li>We'll notify you when your order ships</li>
+                        <li>Expected delivery: 3-5 business days</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'shop:order_detail' order.order_number %}" class="btn btn-outline-primary">
+                    <i class="bi bi-eye"></i> View Order Details
+                </a>
+                <a href="{% url 'shop:product_list' %}" class="btn btn-primary">
+                    <i class="bi bi-grid"></i> Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

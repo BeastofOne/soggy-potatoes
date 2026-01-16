@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - Soggy Potatoes{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'shop:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'shop:cart' %}">Cart</a></li>
+            <li class="breadcrumb-item active">Checkout</li>
+        </ol>
+    </nav>
+
+    <h1 class="mb-4"><i class="bi bi-credit-card"></i> Checkout</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <!-- Checkout Form -->
+            <div class="col-lg-8">
+                <!-- Contact Information -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-envelope"></i> Contact Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="id_email" class="form-label">Email Address *</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger small">{{ form.email.errors.0 }}</div>
+                                {% endif %}
+                                <small class="text-muted">For order confirmation and updates</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_phone" class="form-label">Phone (Optional)</label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="text-danger small">{{ form.phone.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shipping Address -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-truck"></i> Shipping Address</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label for="id_shipping_name" class="form-label">Full Name *</label>
+                                {{ form.shipping_name }}
+                                {% if form.shipping_name.errors %}
+                                    <div class="text-danger small">{{ form.shipping_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12">
+                                <label for="id_shipping_address" class="form-label">Street Address *</label>
+                                {{ form.shipping_address }}
+                                {% if form.shipping_address.errors %}
+                                    <div class="text-danger small">{{ form.shipping_address.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_shipping_city" class="form-label">City *</label>
+                                {{ form.shipping_city }}
+                                {% if form.shipping_city.errors %}
+                                    <div class="text-danger small">{{ form.shipping_city.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-3">
+                                <label for="id_shipping_state" class="form-label">State *</label>
+                                {{ form.shipping_state }}
+                                {% if form.shipping_state.errors %}
+                                    <div class="text-danger small">{{ form.shipping_state.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-3">
+                                <label for="id_shipping_zip" class="form-label">ZIP Code *</label>
+                                {{ form.shipping_zip }}
+                                {% if form.shipping_zip.errors %}
+                                    <div class="text-danger small">{{ form.shipping_zip.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_shipping_country" class="form-label">Country *</label>
+                                {{ form.shipping_country }}
+                                {% if form.shipping_country.errors %}
+                                    <div class="text-danger small">{{ form.shipping_country.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Notice -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-shield-check"></i> Payment</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info mb-0">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Coming Soon:</strong> Secure payment processing via Stripe will be available soon.
+                            For now, orders are placed for demonstration purposes.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-receipt"></i> Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Cart Items -->
+                        <div class="mb-3">
+                            {% for item in cart.items.all %}
+                            <div class="d-flex align-items-center mb-2">
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
+                                         class="rounded me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                {% else %}
+                                    <div class="bg-light rounded me-2 d-flex align-items-center justify-content-center"
+                                         style="width: 50px; height: 50px;">
+                                        <i class="bi bi-image text-muted"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="flex-grow-1">
+                                    <small class="d-block">{{ item.product.name|truncatewords:4 }}</small>
+                                    <small class="text-muted">Qty: {{ item.quantity }}</small>
+                                </div>
+                                <small class="text-end">${{ item.total_price }}</small>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <hr>
+
+                        <!-- Totals -->
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal ({{ cart.total_items }} item{{ cart.total_items|pluralize }})</span>
+                            <span>${{ subtotal }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping</span>
+                            <span class="text-success">{% if shipping_cost == 0 %}Free{% else %}${{ shipping_cost }}{% endif %}</span>
+                        </div>
+                        {% if tax > 0 %}
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tax</span>
+                            <span>${{ tax }}</span>
+                        </div>
+                        {% endif %}
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <strong>Total</strong>
+                            <strong class="text-primary fs-5">${{ total }}</strong>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="bi bi-lock-fill"></i> Place Order
+                        </button>
+
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                <i class="bi bi-shield-lock"></i> Your information is secure
+                            </small>
+                        </div>
+
+                        <div class="text-center mt-2">
+                            <a href="{% url 'shop:cart' %}" class="btn btn-link btn-sm">
+                                <i class="bi bi-arrow-left"></i> Return to Cart
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

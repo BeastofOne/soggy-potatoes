@@ -8,7 +8,9 @@ from django.views.decorators.csrf import csrf_protect
 
 from django.contrib.auth.decorators import login_required
 
-from .models import Product, Category, Cart, CartItem, Wishlist, Review, Order
+from .models import Product, Category, Cart, CartItem, Wishlist, Review, Order, OrderItem
+from .forms import CheckoutForm
+from decimal import Decimal
 
 
 class HomeView(TemplateView):
@@ -334,3 +336,94 @@ def order_detail(request, order_number):
     """Display order details."""
     order = get_object_or_404(Order, order_number=order_number, user=request.user)
     return render(request, 'shop/order_detail.html', {'order': order})
+
+
+# Checkout views
+@login_required
+def checkout_view(request):
+    """Display checkout page with shipping form."""
+    cart = get_or_create_cart(request)
+
+    # Check if cart is empty
+    if cart.total_items == 0:
+        messages.warning(request, 'Your cart is empty. Add some stickers before checkout!')
+        return redirect('shop:product_list')
+
+    # Check stock for all items
+    for item in cart.items.all():
+        if item.quantity > item.product.stock:
+            messages.error(
+                request,
+                f'Sorry, only {item.product.stock} of "{item.product.name}" available. Please update your cart.'
+            )
+            return redirect('shop:cart')
+
+    # Calculate totals
+    subtotal = cart.subtotal
+    shipping_cost = Decimal('0.00')  # Free shipping for now
+    tax = Decimal('0.00')  # No tax calculation yet (Phase 6 with Stripe)
+    total = subtotal + shipping_cost + tax
+
+    # Pre-fill form with user info if available
+    initial_data = {
+        'email': request.user.email,
+        'shipping_name': f'{request.user.first_name} {request.user.last_name}'.strip() or request.user.username,
+    }
+
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            # Create order
+            order = Order.objects.create(
+                user=request.user,
+                email=form.cleaned_data['email'],
+                phone=form.cleaned_data.get('phone', ''),
+                shipping_name=form.cleaned_data['shipping_name'],
+                shipping_address=form.cleaned_data['shipping_address'],
+                shipping_city=form.cleaned_data['shipping_city'],
+                shipping_state=form.cleaned_data['shipping_state'],
+                shipping_zip=form.cleaned_data['shipping_zip'],
+                shipping_country=form.cleaned_data['shipping_country'],
+                subtotal=subtotal,
+                shipping_cost=shipping_cost,
+                tax=tax,
+                total=total,
+            )
+
+            # Create order items and reduce stock
+            for cart_item in cart.items.all():
+                OrderItem.objects.create(
+                    order=order,
+                    product=cart_item.product,
+                    product_name=cart_item.product.name,
+                    product_price=cart_item.product.current_price,
+                    quantity=cart_item.quantity,
+                )
+                # Reduce stock
+                cart_item.product.stock -= cart_item.quantity
+                cart_item.product.save()
+
+            # Clear the cart
+            cart.items.all().delete()
+
+            messages.success(request, f'Order {order.order_number} placed successfully!')
+            return redirect('shop:order_confirmation', order_number=order.order_number)
+    else:
+        form = CheckoutForm(initial=initial_data)
+
+    context = {
+        'form': form,
+        'cart': cart,
+        'subtotal': subtotal,
+        'shipping_cost': shipping_cost,
+        'tax': tax,
+        'total': total,
+    }
+    return render(request, 'shop/checkout.html', context)
+
+
+@login_required
+def order_confirmation(request, order_number):
+    """Display order confirmation page."""
+    order = get_object_or_404(Order, order_number=order_number, user=request.user)
+    return render(request, 'shop/order_confirmation.html', {'order': order})
