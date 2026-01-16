@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% load forum_tags %}
+
+{% block title %}{{ thread.title }} - Forum - Soggy Potatoes{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'shop:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'forum:home' %}">Forum</a></li>
+            <li class="breadcrumb-item"><a href="{{ thread.category.get_absolute_url }}">{{ thread.category.name }}</a></li>
+            <li class="breadcrumb-item active">{{ thread.title|truncatewords:5 }}</li>
+        </ol>
+    </nav>
+
+    <!-- Thread Header -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h1 class="h3 mb-2">
+                        {% if thread.is_pinned %}
+                            <span class="badge bg-warning text-dark me-2"><i class="bi bi-pin-angle-fill"></i> Pinned</span>
+                        {% endif %}
+                        {% if thread.is_locked %}
+                            <span class="badge bg-secondary me-2"><i class="bi bi-lock-fill"></i> Locked</span>
+                        {% endif %}
+                        {{ thread.title }}
+                    </h1>
+                    <p class="text-muted mb-0">
+                        Started by <strong>{{ thread.author.username }}</strong>
+                        on {{ thread.created_at|date:"F d, Y" }}
+                        | {{ thread.views }} views | {{ thread.reply_count }} replies
+                    </p>
+                </div>
+
+                <!-- Thread Voting -->
+                <div class="text-center">
+                    {% if user.is_authenticated %}
+                        <button class="btn btn-sm {% if 'upvote' in user_thread_reactions %}btn-success{% else %}btn-outline-success{% endif %} vote-btn"
+                                data-thread-id="{{ thread.pk }}" data-reaction="upvote">
+                            <i class="bi bi-arrow-up"></i>
+                        </button>
+                    {% else %}
+                        <button class="btn btn-sm btn-outline-success" disabled title="Log in to vote">
+                            <i class="bi bi-arrow-up"></i>
+                        </button>
+                    {% endif %}
+                    <div class="my-1">
+                        <span class="thread-score fs-5 fw-bold {% if thread.score > 0 %}text-success{% elif thread.score < 0 %}text-danger{% else %}text-muted{% endif %}">
+                            {{ thread.score }}
+                        </span>
+                    </div>
+                    {% if user.is_authenticated %}
+                        <button class="btn btn-sm {% if 'downvote' in user_thread_reactions %}btn-danger{% else %}btn-outline-danger{% endif %} vote-btn"
+                                data-thread-id="{{ thread.pk }}" data-reaction="downvote">
+                            <i class="bi bi-arrow-down"></i>
+                        </button>
+                    {% else %}
+                        <button class="btn btn-sm btn-outline-danger" disabled title="Log in to vote">
+                            <i class="bi bi-arrow-down"></i>
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Posts -->
+    {% for post in posts %}
+    <div class="card mb-3" id="post-{{ post.pk }}">
+        <div class="card-body">
+            <div class="row">
+                <!-- Vote Column -->
+                <div class="col-auto text-center pe-0" style="width: 60px;">
+                    {% if user.is_authenticated %}
+                        <button class="btn btn-sm {% if user_post_reactions|get_item:post.pk == 'upvote' %}btn-success{% else %}btn-outline-success{% endif %} post-vote-btn"
+                                data-post-id="{{ post.pk }}" data-reaction="upvote">
+                            <i class="bi bi-arrow-up"></i>
+                        </button>
+                    {% else %}
+                        <button class="btn btn-sm btn-outline-success" disabled>
+                            <i class="bi bi-arrow-up"></i>
+                        </button>
+                    {% endif %}
+                    <div class="my-1">
+                        <span class="post-score-{{ post.pk }} {% if post.score > 0 %}text-success{% elif post.score < 0 %}text-danger{% else %}text-muted{% endif %}">
+                            {{ post.score }}
+                        </span>
+                    </div>
+                    {% if user.is_authenticated %}
+                        <button class="btn btn-sm {% if user_post_reactions|get_item:post.pk == 'downvote' %}btn-danger{% else %}btn-outline-danger{% endif %} post-vote-btn"
+                                data-post-id="{{ post.pk }}" data-reaction="downvote">
+                            <i class="bi bi-arrow-down"></i>
+                        </button>
+                    {% else %}
+                        <button class="btn btn-sm btn-outline-danger" disabled>
+                            <i class="bi bi-arrow-down"></i>
+                        </button>
+                    {% endif %}
+                </div>
+
+                <!-- Content Column -->
+                <div class="col">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <strong>{{ post.author.username }}</strong>
+                            {% if post.author == thread.author %}
+                                <span class="badge bg-primary ms-1">OP</span>
+                            {% endif %}
+                            <span class="text-muted ms-2">{{ post.created_at|date:"M d, Y g:i A" }}</span>
+                            {% if post.is_edited %}
+                                <span class="text-muted small ms-2">(edited)</span>
+                            {% endif %}
+                        </div>
+                        {% if forloop.first %}
+                            <span class="badge bg-secondary">#1</span>
+                        {% else %}
+                            <span class="badge bg-light text-dark">#{{ forloop.counter }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="post-content">
+                        {{ post.content|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Reply Form -->
+    {% if not thread.is_locked %}
+        {% if user.is_authenticated %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-reply"></i> Post a Reply</h5>
+            </div>
+            <div class="card-body">
+                <form action="{% url 'forum:create_reply' thread.category.slug thread.slug %}" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <textarea name="content" class="form-control" rows="4"
+                                  placeholder="Write your reply..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-send"></i> Post Reply
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="card mt-4">
+            <div class="card-body text-center py-4">
+                <p class="mb-2">Want to join the discussion?</p>
+                <a href="{% url 'users:login' %}?next={{ request.path }}" class="btn btn-primary">
+                    <i class="bi bi-box-arrow-in-right"></i> Log in to Reply
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-warning mt-4">
+            <i class="bi bi-lock"></i> This thread is locked and cannot receive new replies.
+        </div>
+    {% endif %}
+</div>
+
+{% if user.is_authenticated %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Thread voting
+    document.querySelectorAll('.vote-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const threadId = this.dataset.threadId;
+            const reaction = this.dataset.reaction;
+
+            fetch('{% url "forum:toggle_reaction" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: `thread_id=${threadId}&reaction_type=${reaction}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update score display
+                    const scoreEl = document.querySelector('.thread-score');
+                    scoreEl.textContent = data.score;
+                    scoreEl.className = 'thread-score fs-5 fw-bold ' +
+                        (data.score > 0 ? 'text-success' : data.score < 0 ? 'text-danger' : 'text-muted');
+
+                    // Update button states
+                    document.querySelectorAll('.vote-btn').forEach(function(b) {
+                        if (b.dataset.reaction === 'upvote') {
+                            b.className = data.action === 'added' && reaction === 'upvote'
+                                ? 'btn btn-sm btn-success vote-btn'
+                                : 'btn btn-sm btn-outline-success vote-btn';
+                        } else {
+                            b.className = data.action === 'added' && reaction === 'downvote'
+                                ? 'btn btn-sm btn-danger vote-btn'
+                                : 'btn btn-sm btn-outline-danger vote-btn';
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+    // Post voting
+    document.querySelectorAll('.post-vote-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const postId = this.dataset.postId;
+            const reaction = this.dataset.reaction;
+
+            fetch('{% url "forum:toggle_reaction" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: `post_id=${postId}&reaction_type=${reaction}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update score display
+                    const scoreEl = document.querySelector(`.post-score-${postId}`);
+                    scoreEl.textContent = data.score;
+                    scoreEl.className = `post-score-${postId} ` +
+                        (data.score > 0 ? 'text-success' : data.score < 0 ? 'text-danger' : 'text-muted');
+                }
+            });
+        });
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

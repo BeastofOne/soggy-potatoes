@@ -10,7 +10,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('shop.urls')),
     path('account/', include('users.urls')),
-    # path('forum/', include('forum.urls')),  # TODO: Enable when forum is ready
+    path('forum/', include('forum.urls')),
 ]
 
 # Serve media files in development

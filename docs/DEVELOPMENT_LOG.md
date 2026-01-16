@@ -18,6 +18,63 @@
 
 ---
 
+### 2026-01-16 (Phase 5)
+
+**[FEATURE] Community Forum complete**
+
+- Created ForumCategory model:
+  - Name, slug, description, icon (Bootstrap icon class)
+  - Order field for display sorting
+  - Active status for moderation
+  - Thread and post count helper methods
+- Created Thread model:
+  - Foreign key to category and author
+  - Title, content, slug (auto-generated)
+  - Pinned and locked flags for moderation
+  - View counter (incremented on each view)
+  - Score calculation (upvotes - downvotes)
+- Created Post model (replies):
+  - Foreign key to thread and author
+  - Content field with timestamps
+  - Upvote/downvote counts
+  - Score calculation
+- Created Reaction model:
+  - Support for multiple reaction types (upvote, downvote, heart, laugh, wow)
+  - Can be on thread OR post (with database constraint)
+  - Unique constraint: one reaction type per user per target
+  - Check constraint ensures either thread or post, not both
+- Forum views implemented:
+  - ForumHomeView: Categories list with thread counts, recent & popular threads
+  - CategoryDetailView: Paginated thread list (20 per page)
+  - ThreadDetailView: Thread with posts, view tracking, user reactions
+  - CreateThreadView: New thread form with auto-first-post creation
+  - create_reply: Reply submission with locked thread check
+  - toggle_reaction: AJAX endpoint for upvote/downvote toggle
+- Forum templates created:
+  - forum/home.html - Categories grid with icons and stats
+  - forum/category.html - Thread list with author, replies, views
+  - forum/thread.html - Full thread view with voting buttons
+  - forum/create_thread.html - New thread form
+- Custom template tag:
+  - forum_tags.py with `get_item` filter for dictionary lookup
+- Created 4 sample forum categories:
+  - General Discussion (chat-dots icon)
+  - Show & Tell (camera icon)
+  - Requests & Suggestions (lightbulb icon)
+  - Trading & Swapping (arrow-left-right icon)
+- Updated navigation:
+  - Added Forum link to navbar
+  - Updated home.html "Join Forum" button to link to forum
+
+**Status:** Phase 5 - COMPLETE. Ready for Phase 6.
+
+**Next Steps:**
+1. Stripe payment integration
+2. Webhook handling for payment confirmation
+3. Email notifications (order confirmation)
+
+---
+
 ### 2026-01-16 (Phase 4)
 
 **[FEATURE] Checkout & Orders complete**
@@ -326,7 +383,7 @@
 | 2 | E-Commerce Foundation | Complete | 2026-01-16 | 2026-01-16 |
 | 3 | User Features | Complete | 2026-01-16 | 2026-01-16 |
 | 4 | Checkout & Orders | Complete | 2026-01-16 | 2026-01-16 |
-| 5 | Community Forum | Not Started | - | - |
+| 5 | Community Forum | Complete | 2026-01-16 | 2026-01-16 |
 | 6 | Payment Integration | Not Started | - | - |
 | 7 | Polish & Testing | Not Started | - | - |
 | 8 | Deployment | Not Started | - | - |

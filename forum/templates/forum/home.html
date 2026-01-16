@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Community Forum - Soggy Potatoes{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1><i class="bi bi-chat-dots"></i> Community Forum</h1>
+            <p class="text-muted mb-0">Connect with fellow sticker lovers!</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Categories -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-grid"></i> Categories</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for category in categories %}
+                    <a href="{{ category.get_absolute_url }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="{{ category.icon }} me-2 text-primary"></i>
+                                <strong>{{ category.name }}</strong>
+                                {% if category.description %}
+                                    <br>
+                                    <small class="text-muted">{{ category.description }}</small>
+                                {% endif %}
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-primary">{{ category.thread_count }} threads</span>
+                                <span class="badge bg-secondary">{{ category.post_count }} posts</span>
+                            </div>
+                        </div>
+                    </a>
+                    {% empty %}
+                    <div class="list-group-item text-center text-muted py-4">
+                        <i class="bi bi-inbox fs-1"></i>
+                        <p class="mt-2 mb-0">No categories yet. Check back soon!</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Recent Threads -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-clock"></i> Recent Discussions</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for thread in recent_threads %}
+                    <a href="{{ thread.get_absolute_url }}" class="list-group-item list-group-item-action py-2">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-truncate" style="max-width: 200px;">{{ thread.title }}</span>
+                            <small class="text-muted">{{ thread.created_at|timesince }} ago</small>
+                        </div>
+                        <small class="text-muted">
+                            by {{ thread.author.username }} in {{ thread.category.name }}
+                        </small>
+                    </a>
+                    {% empty %}
+                    <div class="list-group-item text-center text-muted py-3">
+                        No discussions yet
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Popular Threads -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-fire"></i> Popular Threads</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for thread in popular_threads %}
+                    <a href="{{ thread.get_absolute_url }}" class="list-group-item list-group-item-action py-2">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-truncate" style="max-width: 180px;">{{ thread.title }}</span>
+                            <span class="badge bg-success">{{ thread.score }} pts</span>
+                        </div>
+                        <small class="text-muted">
+                            {{ thread.views }} views | {{ thread.reply_count }} replies
+                        </small>
+                    </a>
+                    {% empty %}
+                    <div class="list-group-item text-center text-muted py-3">
+                        No popular threads yet
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Forum Stats -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-bar-chart"></i> Forum Stats</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <h5 class="mb-0">{{ categories|length }}</h5>
+                            <small class="text-muted">Categories</small>
+                        </div>
+                        <div class="col-4">
+                            <h5 class="mb-0">{{ recent_threads|length }}</h5>
+                            <small class="text-muted">Threads</small>
+                        </div>
+                        <div class="col-4">
+                            <h5 class="mb-0">{{ popular_threads|length }}</h5>
+                            <small class="text-muted">Active</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
