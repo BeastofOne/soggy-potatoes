@@ -31,6 +31,11 @@ urlpatterns = [
     path('checkout/', views.checkout_view, name='checkout'),
     path('order/confirmation/<str:order_number>/', views.order_confirmation, name='order_confirmation'),
 
+    # Payment
+    path('payment/success/', views.payment_success, name='payment_success'),
+    path('payment/cancelled/', views.payment_cancelled, name='payment_cancelled'),
+    path('webhook/stripe/', views.stripe_webhook, name='stripe_webhook'),
+
     # Orders
     path('orders/', views.order_history, name='order_history'),
     path('orders/<str:order_number>/', views.order_detail, name='order_detail'),

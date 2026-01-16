@@ -1,16 +1,27 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.views.generic import TemplateView, ListView, DetailView
 from django.contrib import messages
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.conf import settings
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 from django.contrib.auth.decorators import login_required
 
 from .models import Product, Category, Cart, CartItem, Wishlist, Review, Order, OrderItem
 from .forms import CheckoutForm
+from . import payments
 from decimal import Decimal
+import stripe
+import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class HomeView(TemplateView):
@@ -361,7 +372,7 @@ def checkout_view(request):
     # Calculate totals
     subtotal = cart.subtotal
     shipping_cost = Decimal('0.00')  # Free shipping for now
-    tax = Decimal('0.00')  # No tax calculation yet (Phase 6 with Stripe)
+    tax = Decimal('0.00')  # No tax calculation yet
     total = subtotal + shipping_cost + tax
 
     # Pre-fill form with user info if available
@@ -373,7 +384,7 @@ def checkout_view(request):
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            # Create order
+            # Create order with pending status
             order = Order.objects.create(
                 user=request.user,
                 email=form.cleaned_data['email'],
@@ -388,9 +399,10 @@ def checkout_view(request):
                 shipping_cost=shipping_cost,
                 tax=tax,
                 total=total,
+                status='pending',
             )
 
-            # Create order items and reduce stock
+            # Create order items (don't reduce stock yet - wait for payment)
             for cart_item in cart.items.all():
                 OrderItem.objects.create(
                     order=order,
@@ -399,15 +411,55 @@ def checkout_view(request):
                     product_price=cart_item.product.current_price,
                     quantity=cart_item.quantity,
                 )
+
+            # Store order ID in session for later reference
+            request.session['pending_order_id'] = order.id
+
+            # Check if Stripe keys are configured
+            if settings.STRIPE_SECRET_KEY and not settings.STRIPE_SECRET_KEY.startswith('pk_test_placeholder'):
+                # Create Stripe Checkout Session
+                try:
+                    success_url = request.build_absolute_uri(
+                        reverse('shop:payment_success') + '?session_id={CHECKOUT_SESSION_ID}'
+                    )
+                    cancel_url = request.build_absolute_uri(
+                        reverse('shop:payment_cancelled')
+                    )
+
+                    session = payments.create_checkout_session(
+                        request, order, success_url, cancel_url
+                    )
+
+                    # Store session ID in order
+                    order.stripe_payment_intent_id = session.id
+                    order.save()
+
+                    # Redirect to Stripe Checkout
+                    return redirect(session.url)
+
+                except stripe.error.StripeError as e:
+                    logger.error(f'Stripe error: {e}')
+                    messages.error(request, 'Payment processing error. Please try again.')
+                    order.delete()
+                    return redirect('shop:checkout')
+            else:
+                # Development mode - skip payment, mark as paid
+                order.status = 'processing'
+                order.save()
+
                 # Reduce stock
-                cart_item.product.stock -= cart_item.quantity
-                cart_item.product.save()
+                for cart_item in cart.items.all():
+                    cart_item.product.stock -= cart_item.quantity
+                    cart_item.product.save()
 
-            # Clear the cart
-            cart.items.all().delete()
+                # Clear cart
+                cart.items.all().delete()
 
-            messages.success(request, f'Order {order.order_number} placed successfully!')
-            return redirect('shop:order_confirmation', order_number=order.order_number)
+                # Send confirmation email
+                send_order_confirmation_email(order)
+
+                messages.success(request, f'Order {order.order_number} placed successfully! (Dev mode - payment skipped)')
+                return redirect('shop:order_confirmation', order_number=order.order_number)
     else:
         form = CheckoutForm(initial=initial_data)
 
@@ -418,8 +470,171 @@ def checkout_view(request):
         'shipping_cost': shipping_cost,
         'tax': tax,
         'total': total,
+        'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
     }
     return render(request, 'shop/checkout.html', context)
+
+
+@login_required
+def payment_success(request):
+    """Handle successful Stripe payment redirect."""
+    session_id = request.GET.get('session_id')
+
+    if not session_id:
+        messages.error(request, 'Invalid payment session.')
+        return redirect('shop:home')
+
+    try:
+        # Retrieve session from Stripe
+        session = payments.retrieve_checkout_session(session_id)
+
+        # Find the order
+        order = Order.objects.get(stripe_payment_intent_id=session_id)
+
+        # Verify payment was successful
+        if session.payment_status == 'paid':
+            # Update order status
+            order.status = 'processing'
+            order.save()
+
+            # Reduce stock
+            for item in order.items.all():
+                if item.product:
+                    item.product.stock -= item.quantity
+                    item.product.save()
+
+            # Clear cart
+            cart = get_or_create_cart(request)
+            cart.items.all().delete()
+
+            # Clear session
+            if 'pending_order_id' in request.session:
+                del request.session['pending_order_id']
+
+            # Send confirmation email
+            send_order_confirmation_email(order)
+
+            messages.success(request, f'Payment successful! Order {order.order_number} confirmed.')
+            return redirect('shop:order_confirmation', order_number=order.order_number)
+        else:
+            messages.warning(request, 'Payment is being processed. You will receive a confirmation email shortly.')
+            return redirect('shop:order_detail', order_number=order.order_number)
+
+    except Order.DoesNotExist:
+        messages.error(request, 'Order not found.')
+        return redirect('shop:home')
+    except stripe.error.StripeError as e:
+        logger.error(f'Stripe error retrieving session: {e}')
+        messages.error(request, 'Error verifying payment. Please contact support.')
+        return redirect('shop:home')
+
+
+@login_required
+def payment_cancelled(request):
+    """Handle cancelled Stripe payment."""
+    pending_order_id = request.session.get('pending_order_id')
+
+    if pending_order_id:
+        try:
+            order = Order.objects.get(id=pending_order_id, user=request.user, status='pending')
+            # Delete the pending order since payment was cancelled
+            order.delete()
+            del request.session['pending_order_id']
+        except Order.DoesNotExist:
+            pass
+
+    messages.info(request, 'Payment cancelled. Your cart items are still saved.')
+    return redirect('shop:cart')
+
+
+@csrf_exempt
+def stripe_webhook(request):
+    """Handle Stripe webhook events."""
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+
+    if not sig_header:
+        return HttpResponse(status=400)
+
+    try:
+        event = payments.construct_webhook_event(payload, sig_header)
+    except ValueError:
+        # Invalid payload
+        logger.error('Invalid Stripe webhook payload')
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError:
+        # Invalid signature
+        logger.error('Invalid Stripe webhook signature')
+        return HttpResponse(status=400)
+
+    # Handle the event
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        handle_successful_payment(session)
+    elif event['type'] == 'payment_intent.payment_failed':
+        intent = event['data']['object']
+        handle_failed_payment(intent)
+
+    return HttpResponse(status=200)
+
+
+def handle_successful_payment(session):
+    """Process successful payment from webhook."""
+    try:
+        order = Order.objects.get(stripe_payment_intent_id=session['id'])
+
+        if order.status == 'pending':
+            order.status = 'processing'
+            order.save()
+
+            # Reduce stock
+            for item in order.items.all():
+                if item.product:
+                    item.product.stock -= item.quantity
+                    item.product.save()
+
+            # Send confirmation email
+            send_order_confirmation_email(order)
+
+            logger.info(f'Order {order.order_number} payment confirmed via webhook')
+
+    except Order.DoesNotExist:
+        logger.error(f'Order not found for session {session["id"]}')
+
+
+def handle_failed_payment(intent):
+    """Process failed payment from webhook."""
+    try:
+        order = Order.objects.get(stripe_payment_intent_id=intent['id'])
+        order.status = 'cancelled'
+        order.save()
+        logger.info(f'Order {order.order_number} payment failed')
+    except Order.DoesNotExist:
+        logger.error(f'Order not found for intent {intent["id"]}')
+
+
+def send_order_confirmation_email(order):
+    """Send order confirmation email to customer."""
+    subject = f'Order Confirmed - {order.order_number} - Soggy Potatoes'
+
+    # Render HTML email
+    html_message = render_to_string('shop/emails/order_confirmation.html', {
+        'order': order,
+    })
+    plain_message = strip_tags(html_message)
+
+    try:
+        send_mail(
+            subject,
+            plain_message,
+            settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@soggypotatoes.com',
+            [order.email],
+            html_message=html_message,
+            fail_silently=False,
+        )
+        logger.info(f'Order confirmation email sent for {order.order_number}')
+    except Exception as e:
+        logger.error(f'Failed to send order confirmation email: {e}')
 
 
 @login_required
