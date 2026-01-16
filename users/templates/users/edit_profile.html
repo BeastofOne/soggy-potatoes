@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile - Soggy Potatoes{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2 mb-0"><i class="bi bi-pencil-square"></i> Edit Profile</h1>
+            <a href="{% url 'users:public_profile' request.user.username %}" class="btn btn-outline-secondary">
+                <i class="bi bi-eye"></i> View Public Profile
+            </a>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Basic Info -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-person"></i> About You</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Avatar -->
+                    <div class="mb-4 text-center">
+                        {% if profile.avatar %}
+                            <img src="{{ profile.avatar.url }}" alt="Current avatar"
+                                 class="rounded-circle mb-2" style="width: 100px; height: 100px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-2"
+                                 style="width: 100px; height: 100px;">
+                                <i class="bi bi-person-circle text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                        {% endif %}
+                        <div>
+                            <label for="avatar" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-camera"></i> Change Avatar
+                            </label>
+                            <input type="file" id="avatar" name="avatar" accept="image/*" class="d-none">
+                        </div>
+                    </div>
+
+                    <!-- Bio -->
+                    <div class="mb-3">
+                        <label for="bio" class="form-label">Bio</label>
+                        <textarea class="form-control" id="bio" name="bio" rows="3"
+                                  maxlength="500" placeholder="Tell us about yourself!">{{ profile.bio }}</textarea>
+                        <small class="text-muted">Up to 500 characters</small>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location"
+                               value="{{ profile.location }}" placeholder="e.g., Michigan, USA">
+                    </div>
+
+                    <!-- Website -->
+                    <div class="mb-0">
+                        <label for="website" class="form-label">Website</label>
+                        <input type="url" class="form-control" id="website" name="website"
+                               value="{{ profile.website }}" placeholder="https://example.com">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pet Info -->
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-heart-fill"></i> Pet Information</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Has Pets Toggle -->
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="has_pets" name="has_pets"
+                               {% if profile.has_pets %}checked{% endif %}>
+                        <label class="form-check-label" for="has_pets">I have pets!</label>
+                    </div>
+
+                    <div id="pet-details" {% if not profile.has_pets %}style="display: none;"{% endif %}>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="pet_count" class="form-label">Number of Pets</label>
+                                <input type="number" class="form-control" id="pet_count" name="pet_count"
+                                       value="{{ profile.pet_count }}" min="0" max="99">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="pet_types" class="form-label">Pet Types</label>
+                                <input type="text" class="form-control" id="pet_types" name="pet_types"
+                                       value="{{ profile.pet_types }}" placeholder="e.g., 2 cats, 1 dog">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="pet_names" class="form-label">Pet Names</label>
+                            <input type="text" class="form-control" id="pet_names" name="pet_names"
+                                   value="{{ profile.pet_names }}" placeholder="e.g., Whiskers, Buddy, Goldie">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="favorite_pet_story" class="form-label">Favorite Pet Story</label>
+                            <textarea class="form-control" id="favorite_pet_story" name="favorite_pet_story"
+                                      rows="3" maxlength="1000"
+                                      placeholder="Share a fun story about your pets!">{{ profile.favorite_pet_story }}</textarea>
+                        </div>
+
+                        <!-- Pet Photos -->
+                        <div class="mb-3">
+                            <label class="form-label">Pet Photos</label>
+
+                            {% if pet_photos %}
+                            <div class="row g-2 mb-3">
+                                {% for photo in pet_photos %}
+                                <div class="col-4 col-md-3">
+                                    <div class="position-relative">
+                                        <img src="{{ photo.image.url }}" alt="{{ photo.caption }}"
+                                             class="img-fluid rounded" style="height: 80px; width: 100%; object-fit: cover;">
+                                        <a href="{% url 'users:delete_pet_photo' photo.pk %}"
+                                           class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
+                                           style="padding: 2px 6px; font-size: 10px;"
+                                           onclick="return confirm('Delete this photo?');">
+                                            <i class="bi bi-x"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            <input type="file" class="form-control" id="pet_photos" name="pet_photos"
+                                   accept="image/*" multiple>
+                            <small class="text-muted">Upload up to 6 pet photos (jpg, png)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg"></i> Save Changes
+                </button>
+                <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const hasPetsCheckbox = document.getElementById('has_pets');
+    const petDetails = document.getElementById('pet-details');
+
+    hasPetsCheckbox.addEventListener('change', function() {
+        petDetails.style.display = this.checked ? 'block' : 'none';
+    });
+
+    // Preview avatar before upload
+    const avatarInput = document.getElementById('avatar');
+    avatarInput.addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.querySelector('img[alt="Current avatar"]') ||
+                               document.querySelector('.bg-light.rounded-circle');
+                if (preview.tagName === 'IMG') {
+                    preview.src = e.target.result;
+                } else {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = 'Current avatar';
+                    img.className = 'rounded-circle mb-2';
+                    img.style = 'width: 100px; height: 100px; object-fit: cover;';
+                    preview.replaceWith(img);
+                }
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    });
+});
+</script>
+{% endblock %}

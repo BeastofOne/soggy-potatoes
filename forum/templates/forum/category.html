@@ -64,7 +64,7 @@
                                 </a>
                                 <br>
                                 <small class="text-muted">
-                                    by {{ thread.author.username }} | {{ thread.created_at|date:"M d, Y" }}
+                                    by <a href="{% url 'users:public_profile' thread.author.username %}" class="text-decoration-none">{{ thread.author.username }}</a> | {{ thread.created_at|date:"M d, Y" }}
                                 </small>
                             </div>
                         </div>

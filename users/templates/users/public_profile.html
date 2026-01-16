@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile_user.username }} - Soggy Potatoes{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- Profile Header -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-3 text-center mb-3 mb-md-0">
+                        {% if profile.avatar %}
+                            <img src="{{ profile.avatar.url }}" alt="{{ profile_user.username }}"
+                                 class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center"
+                                 style="width: 150px; height: 150px;">
+                                <i class="bi bi-person-circle text-muted" style="font-size: 4rem;"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-9">
+                        <h1 class="h2 mb-2">{{ profile_user.username }}</h1>
+                        <p class="text-muted mb-2">
+                            <i class="bi bi-calendar3"></i> Member since {{ profile_user.date_joined|date:"F Y" }}
+                            {% if profile.location %}
+                                <span class="ms-3"><i class="bi bi-geo-alt"></i> {{ profile.location }}</span>
+                            {% endif %}
+                        </p>
+                        {% if profile.bio %}
+                            <p class="mb-2">{{ profile.bio }}</p>
+                        {% endif %}
+                        {% if profile.website %}
+                            <p class="mb-0">
+                                <a href="{{ profile.website }}" target="_blank" rel="noopener noreferrer">
+                                    <i class="bi bi-link-45deg"></i> {{ profile.website }}
+                                </a>
+                            </p>
+                        {% endif %}
+                        {% if is_own_profile %}
+                            <a href="{% url 'users:edit_profile' %}" class="btn btn-outline-primary btn-sm mt-2">
+                                <i class="bi bi-pencil"></i> Edit Profile
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Left Column - Pet Info -->
+            <div class="col-md-5 mb-4">
+                <!-- Pet Section -->
+                {% if profile.has_pets %}
+                <div class="card mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="bi bi-heart-fill"></i> My Pets</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if profile.pet_count > 0 %}
+                            <p class="mb-2">
+                                <strong><i class="bi bi-hash"></i> Number of Pets:</strong> {{ profile.pet_count }}
+                            </p>
+                        {% endif %}
+                        {% if profile.pet_types %}
+                            <p class="mb-2">
+                                <strong><i class="bi bi-tags"></i> Pet Types:</strong> {{ profile.pet_types }}
+                            </p>
+                        {% endif %}
+                        {% if profile.pet_names %}
+                            <p class="mb-2">
+                                <strong><i class="bi bi-person-badge"></i> Names:</strong> {{ profile.pet_names }}
+                            </p>
+                        {% endif %}
+                        {% if profile.favorite_pet_story %}
+                            <hr>
+                            <p class="mb-0 fst-italic">"{{ profile.favorite_pet_story }}"</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Pet Photos -->
+                {% if pet_photos %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-images"></i> Pet Photos</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-2">
+                            {% for photo in pet_photos %}
+                            <div class="col-6">
+                                <img src="{{ photo.image.url }}" alt="{{ photo.caption|default:'Pet photo' }}"
+                                     class="img-fluid rounded" style="height: 120px; width: 100%; object-fit: cover;"
+                                     data-bs-toggle="tooltip" title="{{ photo.caption }}">
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="card mb-4">
+                    <div class="card-body text-center text-muted py-4">
+                        <i class="bi bi-emoji-smile fs-1"></i>
+                        <p class="mt-2 mb-0">No pet info shared yet!</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Product Reviews -->
+                {% if reviews %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-star-fill text-warning"></i> Product Reviews</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            {% for review in reviews %}
+                            <li class="list-group-item">
+                                <a href="{{ review.product.get_absolute_url }}" class="text-decoration-none">
+                                    <strong>{{ review.product.name }}</strong>
+                                </a>
+                                <span class="text-warning ms-2">
+                                    {% for i in "12345"|make_list %}
+                                        {% if forloop.counter <= review.rating %}
+                                            <i class="bi bi-star-fill"></i>
+                                        {% else %}
+                                            <i class="bi bi-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+                                <p class="text-muted small mb-0 mt-1">{{ review.comment|truncatewords:20 }}</p>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Right Column - Forum Activity -->
+            <div class="col-md-7">
+                <!-- Forum Threads -->
+                {% if threads %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-chat-left-text"></i> Forum Threads Started</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            {% for thread in threads %}
+                            <li class="list-group-item">
+                                <a href="{{ thread.get_absolute_url }}" class="text-decoration-none fw-bold">
+                                    {{ thread.title }}
+                                </a>
+                                <span class="badge bg-light text-dark ms-2">{{ thread.reply_count }} replies</span>
+                                <p class="text-muted small mb-0 mt-1">
+                                    in {{ thread.category.name }} | {{ thread.created_at|date:"M d, Y" }}
+                                </p>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Recent Posts -->
+                {% if posts %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-chat-quote"></i> Recent Forum Posts</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            {% for post in posts %}
+                            <li class="list-group-item">
+                                <a href="{{ post.thread.get_absolute_url }}#post-{{ post.pk }}" class="text-decoration-none">
+                                    <strong>Re: {{ post.thread.title|truncatewords:8 }}</strong>
+                                </a>
+                                <p class="mb-1 mt-1">{{ post.content|truncatewords:25 }}</p>
+                                <small class="text-muted">{{ post.created_at|date:"M d, Y g:i A" }}</small>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if not threads and not posts %}
+                <div class="card">
+                    <div class="card-body text-center text-muted py-5">
+                        <i class="bi bi-chat-dots fs-1"></i>
+                        <p class="mt-2 mb-0">No forum activity yet!</p>
+                        {% if is_own_profile %}
+                            <a href="{% url 'forum:home' %}" class="btn btn-primary mt-3">
+                                <i class="bi bi-plus-circle"></i> Start a Discussion
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

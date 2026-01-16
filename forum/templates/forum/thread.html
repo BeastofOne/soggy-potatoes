@@ -30,7 +30,7 @@
                         {{ thread.title }}
                     </h1>
                     <p class="text-muted mb-0">
-                        Started by <strong>{{ thread.author.username }}</strong>
+                        Started by <a href="{% url 'users:public_profile' thread.author.username %}" class="text-decoration-none"><strong>{{ thread.author.username }}</strong></a>
                         on {{ thread.created_at|date:"F d, Y" }}
                         | {{ thread.views }} views | {{ thread.reply_count }} replies
                     </p>
@@ -106,7 +106,7 @@
                 <div class="col">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>
-                            <strong>{{ post.author.username }}</strong>
+                            <a href="{% url 'users:public_profile' post.author.username %}" class="text-decoration-none"><strong>{{ post.author.username }}</strong></a>
                             {% if post.author == thread.author %}
                                 <span class="badge bg-primary ms-1">OP</span>
                             {% endif %}

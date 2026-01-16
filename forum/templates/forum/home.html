@@ -61,7 +61,7 @@
                             <small class="text-muted">{{ thread.created_at|timesince }} ago</small>
                         </div>
                         <small class="text-muted">
-                            by {{ thread.author.username }} in {{ thread.category.name }}
+                            by <a href="{% url 'users:public_profile' thread.author.username %}" class="text-decoration-none">{{ thread.author.username }}</a> in {{ thread.category.name }}
                         </small>
                     </a>
                     {% empty %}
