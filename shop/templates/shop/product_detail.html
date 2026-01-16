@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - Soggy Potatoes{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'shop:home' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'shop:product_list' %}">Shop</a></li>
+        {% if product.category %}
+            <li class="breadcrumb-item">
+                <a href="{% url 'shop:category' product.category.slug %}">{{ product.category.name }}</a>
+            </li>
+        {% endif %}
+        <li class="breadcrumb-item active">{{ product.name }}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <!-- Product Image -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            {% if product.is_on_sale %}
+                <div class="position-absolute top-0 start-0 m-3">
+                    <span class="badge bg-danger fs-6">-{{ product.discount_percent }}% OFF</span>
+                </div>
+            {% endif %}
+            {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}"
+                     style="max-height: 500px; object-fit: contain;">
+            {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                     style="height: 400px;">
+                    <i class="bi bi-image text-muted" style="font-size: 5rem;"></i>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Product Details -->
+    <div class="col-md-6">
+        <h1 class="mb-2">{{ product.name }}</h1>
+
+        {% if product.category %}
+            <p class="text-muted mb-3">
+                <a href="{% url 'shop:category' product.category.slug %}" class="text-decoration-none">
+                    <i class="bi bi-tag"></i> {{ product.category.name }}
+                </a>
+            </p>
+        {% endif %}
+
+        <!-- Price -->
+        <div class="mb-4">
+            {% if product.is_on_sale %}
+                <span class="fs-2 fw-bold text-primary">${{ product.sale_price }}</span>
+                <span class="fs-4 text-muted text-decoration-line-through ms-2">${{ product.price }}</span>
+                <span class="badge bg-danger ms-2">Save ${{ product.price|add:product.sale_price|stringformat:".2f" }}</span>
+            {% else %}
+                <span class="fs-2 fw-bold text-primary">${{ product.price }}</span>
+            {% endif %}
+        </div>
+
+        <!-- Stock Status -->
+        <div class="mb-4">
+            {% if product.in_stock %}
+                <span class="badge bg-success"><i class="bi bi-check-circle"></i> In Stock ({{ product.stock }} available)</span>
+            {% else %}
+                <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Out of Stock</span>
+            {% endif %}
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+            <h5>Description</h5>
+            <p>{{ product.description }}</p>
+        </div>
+
+        <!-- Add to Cart Form -->
+        {% if product.in_stock %}
+            <form action="{% url 'shop:add_to_cart' product.pk %}" method="post" class="mb-4">
+                {% csrf_token %}
+                <div class="row g-3 align-items-center">
+                    <div class="col-auto">
+                        <label for="quantity" class="col-form-label">Quantity:</label>
+                    </div>
+                    <div class="col-auto">
+                        <select name="quantity" id="quantity" class="form-select" style="width: 80px;">
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= product.stock %}
+                                    <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-cart-plus"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </form>
+        {% else %}
+            <div class="alert alert-warning mb-4">
+                <i class="bi bi-exclamation-triangle"></i> This item is currently out of stock.
+            </div>
+        {% endif %}
+
+        <!-- Product Features -->
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="card-title"><i class="bi bi-info-circle"></i> Product Features</h6>
+                <ul class="mb-0 small">
+                    <li>Premium vinyl material</li>
+                    <li>Waterproof and durable</li>
+                    <li>Easy to apply and remove</li>
+                    <li>Vibrant, fade-resistant colors</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Related Products -->
+{% if related_products %}
+    <hr class="my-5">
+    <h3 class="mb-4">You Might Also Like</h3>
+    <div class="row g-4">
+        {% for related in related_products %}
+            <div class="col-6 col-md-3">
+                <div class="card product-card h-100">
+                    <a href="{{ related.get_absolute_url }}">
+                        {% if related.image %}
+                            <img src="{{ related.image.url }}" class="card-img-top" alt="{{ related.name }}"
+                                 style="height: 150px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                                 style="height: 150px;">
+                                <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>
+                            </div>
+                        {% endif %}
+                    </a>
+                    <div class="card-body text-center">
+                        <h6 class="card-title small">
+                            <a href="{{ related.get_absolute_url }}" class="text-decoration-none text-dark">
+                                {{ related.name }}
+                            </a>
+                        </h6>
+                        <span class="price">${{ related.current_price }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

@@ -18,6 +18,61 @@
 
 ---
 
+### 2026-01-16 (Phase 2)
+
+**[FEATURE] E-Commerce Foundation complete**
+
+- Created Product and Category models:
+  - Category with slug, description, image, active status
+  - Product with price, sale_price, stock, images, featured flag
+  - Helper properties: current_price, is_on_sale, in_stock, discount_percent
+- Cart and CartItem models:
+  - User-based or session-based cart support
+  - Quantity tracking and total calculations
+  - Database constraints to ensure cart has user or session
+- Registered all models in Django admin with:
+  - Product thumbnails in list view
+  - Inline cart item editing
+  - Prepopulated slugs
+  - List filters and search
+- Product list view with:
+  - Category filtering via sidebar
+  - Sorting (newest, price low/high, name A-Z)
+  - Pagination (12 per page)
+  - Sale badges with discount percentages
+- Product detail view with:
+  - Breadcrumb navigation
+  - Large product image
+  - Sale price display with savings
+  - Stock status
+  - Quantity selector with stock limits
+  - Related products from same category
+- Shopping cart functionality:
+  - Add to cart with quantity
+  - Update quantities
+  - Remove items
+  - Subtotal calculation
+  - Stock validation
+- Search functionality:
+  - Searches product names and descriptions
+  - Uses Django Q objects for OR queries
+- **Imported 99 sticker images from Sort Later folder:**
+  - Created management command `import_stickers`
+  - Auto-categorized: Character Sheets (11), Duo Stickers (6), Single (82)
+  - Auto-priced: $5.99 (sheets), $4.99 (duos), $3.99 (singles)
+  - First 6 marked as featured
+  - All set to 100 stock
+- Updated homepage to display real featured products
+
+**Status:** Phase 2 - COMPLETE. Ready for Phase 3.
+
+**Next Steps:**
+1. User profile enhancements (order history)
+2. Wishlist functionality
+3. Product reviews
+
+---
+
 ### 2026-01-16 (Phase 1)
 
 **[FEATURE] Core infrastructure complete**
@@ -182,7 +237,7 @@
 |-------|-------------|--------|---------|-----------|
 | 0 | Setup & Planning | Complete | 2026-01-06 | 2026-01-16 |
 | 1 | Core Infrastructure | Complete | 2026-01-16 | 2026-01-16 |
-| 2 | E-Commerce Foundation | Not Started | - | - |
+| 2 | E-Commerce Foundation | Complete | 2026-01-16 | 2026-01-16 |
 | 3 | User Features | Not Started | - | - |
 | 4 | Checkout & Orders | Not Started | - | - |
 | 5 | Community Forum | Not Started | - | - |

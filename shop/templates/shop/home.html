@@ -11,7 +11,7 @@
         <h1 class="display-4 fw-bold mb-3">Welcome to Soggy Potatoes!</h1>
         <p class="lead mb-4">Cute, quirky stickers made with love. Join our community of sticker enthusiasts!</p>
         <div class="d-flex justify-content-center gap-3">
-            <a href="#" class="btn btn-light btn-lg">
+            <a href="{% url 'shop:product_list' %}" class="btn btn-light btn-lg">
                 <i class="bi bi-grid"></i> Browse Stickers
             </a>
             <a href="#" class="btn btn-outline-light btn-lg">
@@ -30,27 +30,53 @@
         </div>
 
         <div class="row g-4">
-            <!-- Placeholder cards - will be replaced with real products -->
-            {% for i in "123456" %}
+            {% for product in featured_products %}
             <div class="col-6 col-md-4 col-lg-2">
                 <div class="card product-card h-100">
-                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
-                        <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
-                    </div>
+                    {% if product.is_on_sale %}
+                        <div class="position-absolute top-0 start-0 m-2">
+                            <span class="badge bg-danger">-{{ product.discount_percent }}%</span>
+                        </div>
+                    {% endif %}
+                    <a href="{{ product.get_absolute_url }}">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}"
+                                 style="height: 150px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
+                                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                        {% endif %}
+                    </a>
                     <div class="card-body text-center">
-                        <h6 class="card-title">Cute Sticker {{ i }}</h6>
-                        <p class="price mb-2">$3.99</p>
-                        <button class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-cart-plus"></i> Add
-                        </button>
+                        <h6 class="card-title">
+                            <a href="{{ product.get_absolute_url }}" class="text-decoration-none text-dark">
+                                {{ product.name|truncatewords:3 }}
+                            </a>
+                        </h6>
+                        <p class="price mb-2">${{ product.current_price }}</p>
+                        {% if product.in_stock %}
+                            <form action="{% url 'shop:add_to_cart' product.pk %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-cart-plus"></i> Add
+                                </button>
+                            </form>
+                        {% else %}
+                            <span class="badge bg-secondary">Out of Stock</span>
+                        {% endif %}
                     </div>
                 </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No featured products yet. Check back soon!</p>
             </div>
             {% endfor %}
         </div>
 
         <div class="text-center mt-4">
-            <a href="#" class="btn btn-primary">
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary">
                 View All Stickers <i class="bi bi-arrow-right"></i>
             </a>
         </div>
