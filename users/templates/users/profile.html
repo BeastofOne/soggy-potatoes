@@ -36,6 +36,14 @@
                         <span class="badge bg-success float-end">{{ user.cart.total_items }}</span>
                     {% endif %}
                 </a>
+                {% if user.is_superuser %}
+                <a href="{% url 'shop:setup_wizard_edit' %}" class="list-group-item list-group-item-action text-primary">
+                    <i class="bi bi-gear"></i> Store Setup Wizard
+                </a>
+                <a href="{% url 'admin:index' %}" class="list-group-item list-group-item-action text-primary">
+                    <i class="bi bi-shield-lock"></i> Admin Panel
+                </a>
+                {% endif %}
             </div>
         </div>
     </div>
