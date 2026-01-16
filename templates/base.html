@@ -4,7 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Soggy Potatoes - Cute stickers and community">
+    <meta name="description" content="{% block meta_description %}Soggy Potatoes - Cute handmade stickers, vinyl decals, and a fun community. Shop unique designs made with love!{% endblock %}">
+    <meta name="keywords" content="stickers, cute stickers, vinyl stickers, handmade, decals, art, kawaii">
+    <meta name="author" content="Joana - Soggy Potatoes">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{% block og_title %}Soggy Potatoes - Cute Stickers{% endblock %}">
+    <meta property="og:description" content="Handmade cute stickers and a fun community. Shop unique designs!">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:site_name" content="Soggy Potatoes">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Soggy Potatoes - Cute Stickers">
+    <meta name="twitter:description" content="Handmade cute stickers and a fun community.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#8b5cf6">
 
     <title>{% block title %}Soggy Potatoes{% endblock %}</title>
 
@@ -77,7 +99,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="{% url 'users:profile' %}"><i class="bi bi-person"></i> Profile</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-bag"></i> My Orders</a></li>
+                                <li><a class="dropdown-item" href="{% url 'shop:order_history' %}"><i class="bi bi-bag"></i> My Orders</a></li>
                                 {% if user.is_staff %}
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'admin:index' %}"><i class="bi bi-gear"></i> Admin</a></li>
@@ -136,7 +158,7 @@
                     <h6>Quick Links</h6>
                     <ul class="list-unstyled">
                         <li><a href="{% url 'shop:product_list' %}" class="text-muted text-decoration-none">Shop</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Forum</a></li>
+                        <li><a href="{% url 'forum:home' %}" class="text-muted text-decoration-none">Forum</a></li>
                         <li><a href="{% url 'shop:about' %}" class="text-muted text-decoration-none">About</a></li>
                     </ul>
                 </div>
