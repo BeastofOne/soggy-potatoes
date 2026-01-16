@@ -19,4 +19,15 @@ urlpatterns = [
     path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path('cart/update/<int:item_id>/', views.update_cart, name='update_cart'),
     path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
+
+    # Wishlist
+    path('wishlist/', views.wishlist_view, name='wishlist'),
+    path('wishlist/toggle/<int:product_id>/', views.toggle_wishlist, name='toggle_wishlist'),
+
+    # Reviews
+    path('review/add/<int:product_id>/', views.add_review, name='add_review'),
+
+    # Orders
+    path('orders/', views.order_history, name='order_history'),
+    path('orders/<str:order_number>/', views.order_detail, name='order_detail'),
 ]

@@ -6,7 +6,9 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_protect
 
-from .models import Product, Category, Cart, CartItem
+from django.contrib.auth.decorators import login_required
+
+from .models import Product, Category, Cart, CartItem, Wishlist, Review, Order
 
 
 class HomeView(TemplateView):
@@ -92,6 +94,26 @@ class ProductDetailView(DetailView):
                 category=self.object.category,
                 is_active=True
             ).exclude(pk=self.object.pk)[:4]
+
+        # Get reviews
+        context['reviews'] = self.object.reviews.filter(is_approved=True)
+
+        # Check if user can review (logged in and hasn't reviewed yet)
+        if self.request.user.is_authenticated:
+            context['can_review'] = not Review.objects.filter(
+                product=self.object,
+                user=self.request.user
+            ).exists()
+            # Check if product is in user's wishlist
+            try:
+                wishlist = self.request.user.wishlist
+                context['in_wishlist'] = wishlist.products.filter(pk=self.object.pk).exists()
+            except Wishlist.DoesNotExist:
+                context['in_wishlist'] = False
+        else:
+            context['can_review'] = False
+            context['in_wishlist'] = False
+
         return context
 
 
@@ -218,3 +240,97 @@ def remove_from_cart(request, item_id):
         })
 
     return redirect('shop:cart')
+
+
+# Wishlist views
+@login_required
+def wishlist_view(request):
+    """Display user's wishlist."""
+    wishlist, created = Wishlist.objects.get_or_create(user=request.user)
+    return render(request, 'shop/wishlist.html', {'wishlist': wishlist})
+
+
+@login_required
+@require_POST
+@csrf_protect
+def toggle_wishlist(request, product_id):
+    """Add or remove product from wishlist."""
+    product = get_object_or_404(Product, pk=product_id, is_active=True)
+    wishlist, created = Wishlist.objects.get_or_create(user=request.user)
+
+    if wishlist.products.filter(pk=product_id).exists():
+        wishlist.products.remove(product)
+        action = 'removed'
+        messages.info(request, f'{product.name} removed from your wishlist.')
+    else:
+        wishlist.products.add(product)
+        action = 'added'
+        messages.success(request, f'{product.name} added to your wishlist!')
+
+    # Return JSON for AJAX requests
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True,
+            'action': action,
+            'wishlist_count': wishlist.count
+        })
+
+    # Redirect back to where user came from
+    next_url = request.POST.get('next', request.META.get('HTTP_REFERER', 'shop:product_list'))
+    return redirect(next_url)
+
+
+# Review views
+@login_required
+@require_POST
+@csrf_protect
+def add_review(request, product_id):
+    """Add a review for a product."""
+    product = get_object_or_404(Product, pk=product_id, is_active=True)
+
+    # Check if user already reviewed
+    if Review.objects.filter(product=product, user=request.user).exists():
+        messages.error(request, 'You have already reviewed this product.')
+        return redirect('shop:product_detail', slug=product.slug)
+
+    rating = int(request.POST.get('rating', 5))
+    title = request.POST.get('title', '')
+    comment = request.POST.get('comment', '')
+
+    if not title or not comment:
+        messages.error(request, 'Please provide both a title and comment for your review.')
+        return redirect('shop:product_detail', slug=product.slug)
+
+    # Check if user has purchased this product (verified purchase)
+    is_verified = Order.objects.filter(
+        user=request.user,
+        items__product=product,
+        status__in=['delivered', 'shipped']
+    ).exists()
+
+    Review.objects.create(
+        product=product,
+        user=request.user,
+        rating=rating,
+        title=title,
+        comment=comment,
+        is_verified_purchase=is_verified
+    )
+
+    messages.success(request, 'Thank you for your review!')
+    return redirect('shop:product_detail', slug=product.slug)
+
+
+# Order history view
+@login_required
+def order_history(request):
+    """Display user's order history."""
+    orders = Order.objects.filter(user=request.user)
+    return render(request, 'shop/order_history.html', {'orders': orders})
+
+
+@login_required
+def order_detail(request, order_number):
+    """Display order details."""
+    order = get_object_or_404(Order, order_number=order_number, user=request.user)
+    return render(request, 'shop/order_detail.html', {'order': order})

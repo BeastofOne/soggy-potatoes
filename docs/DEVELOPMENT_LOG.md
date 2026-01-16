@@ -18,6 +18,55 @@
 
 ---
 
+### 2026-01-16 (Phase 3)
+
+**[FEATURE] User Features complete**
+
+- Created Wishlist model:
+  - OneToOne relationship with User
+  - ManyToMany with products
+  - Toggle add/remove functionality
+  - Dedicated wishlist page
+- Created Review model:
+  - 1-5 star rating system
+  - Title and comment fields
+  - Verified purchase flag (checked against orders)
+  - Admin moderation support
+  - One review per user per product
+- Created Order and OrderItem models:
+  - Full order tracking with status (pending, processing, shipped, delivered, cancelled)
+  - Shipping address storage
+  - Auto-generated order numbers (SP-YYYYMMDD-XXXX)
+  - Stripe payment intent ID ready for Phase 6
+- Enhanced product detail page:
+  - Star rating display with average
+  - Review count
+  - Wishlist heart button
+  - Customer reviews section
+  - Review submission form
+- Enhanced user profile:
+  - Recent orders table
+  - Recent reviews list
+  - Wishlist link with count
+  - Cart link with count
+- Created new templates:
+  - wishlist.html - Wishlist management
+  - order_history.html - All orders
+  - order_detail.html - Single order view
+- Registered all new models in admin with:
+  - Order management with inline items
+  - Review moderation
+  - Wishlist management
+
+**Status:** Phase 3 - COMPLETE. Ready for Phase 4.
+
+**Next Steps:**
+1. Create checkout flow
+2. Order confirmation emails
+3. Address form validation
+
+---
+
 ### 2026-01-16 (Phase 2)
 
 **[FEATURE] E-Commerce Foundation complete**
@@ -238,7 +287,7 @@
 | 0 | Setup & Planning | Complete | 2026-01-06 | 2026-01-16 |
 | 1 | Core Infrastructure | Complete | 2026-01-16 | 2026-01-16 |
 | 2 | E-Commerce Foundation | Complete | 2026-01-16 | 2026-01-16 |
-| 3 | User Features | Not Started | - | - |
+| 3 | User Features | Complete | 2026-01-16 | 2026-01-16 |
 | 4 | Checkout & Orders | Not Started | - | - |
 | 5 | Community Forum | Not Started | - | - |
 | 6 | Payment Integration | Not Started | - | - |

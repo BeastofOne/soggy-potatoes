@@ -58,4 +58,10 @@ def logout_view(request):
 @login_required
 def profile_view(request):
     """User profile view."""
-    return render(request, 'users/profile.html')
+    from shop.models import Order, Review
+
+    context = {
+        'recent_orders': Order.objects.filter(user=request.user)[:5],
+        'recent_reviews': Review.objects.filter(user=request.user)[:5],
+    }
+    return render(request, 'users/profile.html', context)

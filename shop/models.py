@@ -90,6 +90,19 @@ class Product(models.Model):
             return int(((self.price - self.sale_price) / self.price) * 100)
         return 0
 
+    @property
+    def average_rating(self):
+        """Calculate average review rating."""
+        reviews = self.reviews.filter(is_approved=True)
+        if reviews.exists():
+            return round(sum(r.rating for r in reviews) / reviews.count(), 1)
+        return None
+
+    @property
+    def review_count(self):
+        """Count approved reviews."""
+        return self.reviews.filter(is_approved=True).count()
+
 
 class Cart(models.Model):
     """Shopping cart."""
@@ -145,3 +158,119 @@ class CartItem(models.Model):
     def total_price(self):
         """Calculate total price for this item."""
         return self.product.current_price * self.quantity
+
+
+class Wishlist(models.Model):
+    """User's wishlist of products."""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='wishlist')
+    products = models.ManyToManyField(Product, related_name='wishlisted_by', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Wishlist for {self.user.username}"
+
+    @property
+    def count(self):
+        return self.products.count()
+
+
+class Review(models.Model):
+    """Product review from customers."""
+    RATING_CHOICES = [
+        (1, '1 - Poor'),
+        (2, '2 - Fair'),
+        (3, '3 - Good'),
+        (4, '4 - Very Good'),
+        (5, '5 - Excellent'),
+    ]
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+    rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES)
+    title = models.CharField(max_length=100)
+    comment = models.TextField()
+    is_verified_purchase = models.BooleanField(default=False)
+    is_approved = models.BooleanField(default=True)  # For moderation
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['product', 'user']  # One review per user per product
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.username}'s review of {self.product.name}"
+
+
+class Order(models.Model):
+    """Customer order."""
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('processing', 'Processing'),
+        ('shipped', 'Shipped'),
+        ('delivered', 'Delivered'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    order_number = models.CharField(max_length=20, unique=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+
+    # Shipping info
+    shipping_name = models.CharField(max_length=100)
+    shipping_address = models.TextField()
+    shipping_city = models.CharField(max_length=100)
+    shipping_state = models.CharField(max_length=100)
+    shipping_zip = models.CharField(max_length=20)
+    shipping_country = models.CharField(max_length=100, default='United States')
+
+    # Contact
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True)
+
+    # Totals
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+    shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    tax = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+
+    # Payment
+    stripe_payment_intent_id = models.CharField(max_length=100, blank=True)
+    paid_at = models.DateTimeField(null=True, blank=True)
+
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Order {self.order_number}"
+
+    def save(self, *args, **kwargs):
+        if not self.order_number:
+            # Generate order number: SP-YYYYMMDD-XXXX
+            import random
+            from django.utils import timezone
+            date_str = timezone.now().strftime('%Y%m%d')
+            random_str = ''.join(random.choices('0123456789', k=4))
+            self.order_number = f"SP-{date_str}-{random_str}"
+        super().save(*args, **kwargs)
+
+
+class OrderItem(models.Model):
+    """Item in an order."""
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    product_name = models.CharField(max_length=200)  # Store name in case product deleted
+    product_price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.quantity}x {self.product_name}"
+
+    @property
+    def total_price(self):
+        return self.product_price * self.quantity

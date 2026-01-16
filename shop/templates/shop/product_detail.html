@@ -43,11 +43,29 @@
         <h1 class="mb-2">{{ product.name }}</h1>
 
         {% if product.category %}
-            <p class="text-muted mb-3">
+            <p class="text-muted mb-2">
                 <a href="{% url 'shop:category' product.category.slug %}" class="text-decoration-none">
                     <i class="bi bi-tag"></i> {{ product.category.name }}
                 </a>
             </p>
+        {% endif %}
+
+        <!-- Rating Summary -->
+        {% if product.average_rating %}
+            <div class="mb-3">
+                <span class="text-warning">
+                    {% for i in "12345"|make_list %}
+                        {% if forloop.counter <= product.average_rating %}
+                            <i class="bi bi-star-fill"></i>
+                        {% elif forloop.counter <= product.average_rating|add:"0.5" %}
+                            <i class="bi bi-star-half"></i>
+                        {% else %}
+                            <i class="bi bi-star"></i>
+                        {% endif %}
+                    {% endfor %}
+                </span>
+                <span class="text-muted ms-2">{{ product.average_rating }} ({{ product.review_count }} review{{ product.review_count|pluralize }})</span>
+            </div>
         {% endif %}
 
         <!-- Price -->
@@ -98,6 +116,16 @@
                             <i class="bi bi-cart-plus"></i> Add to Cart
                         </button>
                     </div>
+                    {% if user.is_authenticated %}
+                    <div class="col-auto">
+                        <form action="{% url 'shop:toggle_wishlist' product.pk %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger btn-lg" title="{% if in_wishlist %}Remove from Wishlist{% else %}Add to Wishlist{% endif %}">
+                                <i class="bi bi-heart{% if in_wishlist %}-fill{% endif %}"></i>
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
                 </div>
             </form>
         {% else %}
@@ -118,6 +146,111 @@
                 </ul>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Customer Reviews Section -->
+<hr class="my-5">
+<div class="row">
+    <div class="col-lg-8">
+        <h3 class="mb-4">
+            <i class="bi bi-chat-quote"></i> Customer Reviews
+            {% if product.review_count > 0 %}
+                <span class="badge bg-secondary fs-6">{{ product.review_count }}</span>
+            {% endif %}
+        </h3>
+
+        {% if reviews %}
+            {% for review in reviews %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <span class="text-warning">
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= review.rating %}
+                                        <i class="bi bi-star-fill"></i>
+                                    {% else %}
+                                        <i class="bi bi-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                            <strong class="ms-2">{{ review.title }}</strong>
+                        </div>
+                        {% if review.is_verified_purchase %}
+                            <span class="badge bg-success"><i class="bi bi-patch-check"></i> Verified Purchase</span>
+                        {% endif %}
+                    </div>
+                    <p class="mb-2">{{ review.comment }}</p>
+                    <small class="text-muted">
+                        By {{ review.user.username }} on {{ review.created_at|date:"M d, Y" }}
+                    </small>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center py-4 bg-light rounded">
+                <i class="bi bi-chat-square text-muted" style="font-size: 2rem;"></i>
+                <p class="mt-2 mb-0 text-muted">No reviews yet. Be the first to review this product!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-4">
+        <!-- Write a Review Form -->
+        {% if user.is_authenticated %}
+            {% if can_review %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-pencil"></i> Write a Review</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="{% url 'shop:add_review' product.pk %}" method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="rating" class="form-label">Rating</label>
+                                <select name="rating" id="rating" class="form-select" required>
+                                    <option value="5">5 - Excellent</option>
+                                    <option value="4">4 - Very Good</option>
+                                    <option value="3">3 - Good</option>
+                                    <option value="2">2 - Fair</option>
+                                    <option value="1">1 - Poor</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Review Title</label>
+                                <input type="text" name="title" id="title" class="form-control"
+                                       placeholder="Sum up your review" required maxlength="100">
+                            </div>
+                            <div class="mb-3">
+                                <label for="comment" class="form-label">Your Review</label>
+                                <textarea name="comment" id="comment" class="form-control" rows="4"
+                                          placeholder="Share your experience with this product" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-send"></i> Submit Review
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-check-circle text-success fs-1"></i>
+                        <p class="mt-2 mb-0">You've already reviewed this product.</p>
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="card">
+                <div class="card-body text-center">
+                    <p class="mb-2">Want to leave a review?</p>
+                    <a href="{% url 'users:login' %}?next={{ request.path }}" class="btn btn-outline-primary">
+                        <i class="bi bi-box-arrow-in-right"></i> Log in to Review
+                    </a>
+                </div>
+            </div>
+        {% endif %}
     </div>
 </div>
 
