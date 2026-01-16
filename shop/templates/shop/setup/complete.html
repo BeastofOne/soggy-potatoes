@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block title %}Setup Complete - Soggy Potatoes{% endblock %}
+
+{% block extra_css %}
+<style>
+    .completion-page {
+        max-width: 700px;
+        margin: 50px auto;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .success-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px;
+        animation: scaleIn 0.5s ease-out;
+    }
+
+    @keyframes scaleIn {
+        from { transform: scale(0); }
+        to { transform: scale(1); }
+    }
+
+    .success-icon svg {
+        width: 50px;
+        height: 50px;
+        color: white;
+    }
+
+    .completion-page h1 {
+        font-size: 2.5rem;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .completion-page .subtitle {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 40px;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+        text-align: left;
+    }
+
+    .info-card h3 {
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .info-card p {
+        color: #666;
+        line-height: 1.6;
+    }
+
+    .info-card ul {
+        color: #666;
+        padding-left: 20px;
+    }
+
+    .info-card li {
+        margin-bottom: 8px;
+    }
+
+    .copy-section {
+        background: #f8f9fa;
+        border: 2px dashed #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .copy-section textarea {
+        width: 100%;
+        height: 200px;
+        font-family: monospace;
+        font-size: 0.85rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 10px;
+        resize: vertical;
+    }
+
+    .btn-copy {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.95rem;
+    }
+
+    .btn-copy:hover {
+        background: #5a6fd6;
+    }
+
+    .btn-copy.copied {
+        background: #4caf50;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 15px 35px;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #667eea;
+        border: 2px solid #667eea;
+        padding: 13px 33px;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-secondary:hover {
+        background: #667eea;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="completion-page">
+    <div class="success-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+    </div>
+
+    <h1>Setup Complete!</h1>
+    <p class="subtitle">Thanks {{ user.first_name }}! Your responses have been saved.</p>
+
+    <div class="info-card">
+        <h3>What happens next?</h3>
+        <p>Jake will receive your setup information and configure everything for you. This includes:</p>
+        <ul>
+            <li>Setting up your Stripe payment keys (if provided)</li>
+            <li>Creating your product categories</li>
+            <li>Configuring shipping settings</li>
+            <li>Adding your social media links</li>
+            <li>Any custom features you requested</li>
+        </ul>
+        <p style="margin-top: 15px;"><strong>You'll get an email when everything is ready!</strong></p>
+    </div>
+
+    <div class="info-card">
+        <h3>In the meantime, you can:</h3>
+        <ul>
+            <li><strong>Add products</strong> - Go to Admin Panel > Products > Add Product</li>
+            <li><strong>Upload images</strong> - Each product needs at least one photo</li>
+            <li><strong>Write descriptions</strong> - Tell customers about your stickers!</li>
+        </ul>
+    </div>
+
+    {% if response_text %}
+    <div class="info-card">
+        <h3>Your Responses (for Jake)</h3>
+        <p>This has been emailed to Jake. You can also copy this and send it to him directly:</p>
+        <div class="copy-section">
+            <textarea id="responseText" readonly>{{ response_text }}</textarea>
+            <button class="btn-copy" onclick="copyToClipboard()">Copy to Clipboard</button>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="action-buttons">
+        <a href="{% url 'admin:index' %}" class="btn-primary">Go to Admin Panel</a>
+        <a href="{% url 'shop:home' %}" class="btn-secondary">View Your Shop</a>
+    </div>
+</div>
+
+<script>
+function copyToClipboard() {
+    const textarea = document.getElementById('responseText');
+    textarea.select();
+    document.execCommand('copy');
+
+    const btn = document.querySelector('.btn-copy');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+
+    setTimeout(() => {
+        btn.textContent = 'Copy to Clipboard';
+        btn.classList.remove('copied');
+    }, 2000);
+}
+</script>
+{% endblock %}

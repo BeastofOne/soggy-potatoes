@@ -13,15 +13,125 @@ from django.utils.html import strip_tags
 
 from django.contrib.auth.decorators import login_required
 
-from .models import Product, Category, Cart, CartItem, Wishlist, Review, Order, OrderItem
+from .models import Product, Category, Cart, CartItem, Wishlist, Review, Order, OrderItem, AdminSetupProfile, SetupWizardResponse
 from .forms import CheckoutForm
 from . import payments
 from decimal import Decimal
+from django.utils import timezone
 import stripe
 import json
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+# ============================================
+# SETUP WIZARD VIEWS
+# ============================================
+
+def check_setup_required(user):
+    """Check if user needs to complete setup wizard."""
+    if not user.is_superuser:
+        return False
+    try:
+        profile = user.setup_profile
+        return not profile.setup_completed
+    except AdminSetupProfile.DoesNotExist:
+        # Create profile for superuser
+        AdminSetupProfile.objects.create(user=user)
+        return True
+
+
+@login_required
+def setup_wizard(request):
+    """Display and handle the setup wizard for superusers."""
+    if not request.user.is_superuser:
+        return redirect('shop:home')
+
+    # Check if already completed
+    try:
+        profile = request.user.setup_profile
+        if profile.setup_completed:
+            return redirect('shop:home')
+    except AdminSetupProfile.DoesNotExist:
+        profile = AdminSetupProfile.objects.create(user=request.user)
+
+    if request.method == 'POST':
+        # Save all the responses
+        response = SetupWizardResponse.objects.create(
+            user=request.user,
+            store_name=request.POST.get('store_name', ''),
+            store_tagline=request.POST.get('store_tagline', ''),
+            store_email=request.POST.get('store_email', ''),
+            business_name=request.POST.get('business_name', ''),
+            business_address=request.POST.get('business_address', ''),
+            has_stripe_account=request.POST.get('has_stripe_account') == 'true',
+            stripe_account_email=request.POST.get('stripe_account_email', ''),
+            stripe_public_key=request.POST.get('stripe_public_key', ''),
+            stripe_secret_key=request.POST.get('stripe_secret_key', ''),
+            ships_internationally=request.POST.get('ships_internationally') == 'true',
+            domestic_shipping_price=request.POST.get('domestic_shipping_price') or None,
+            international_shipping_price=request.POST.get('international_shipping_price') or None,
+            free_shipping_threshold=request.POST.get('free_shipping_threshold') or None,
+            product_categories=request.POST.get('product_categories', ''),
+            estimated_product_count=request.POST.get('estimated_product_count', ''),
+            price_range_low=request.POST.get('price_range_low') or None,
+            price_range_high=request.POST.get('price_range_high') or None,
+            instagram_handle=request.POST.get('instagram_handle', ''),
+            tiktok_handle=request.POST.get('tiktok_handle', ''),
+            etsy_store_url=request.POST.get('etsy_store_url', ''),
+            other_social=request.POST.get('other_social', ''),
+            enable_reviews=request.POST.get('enable_reviews') == 'true',
+            enable_wishlist=request.POST.get('enable_wishlist') == 'true',
+            enable_forum=request.POST.get('enable_forum') == 'true',
+            questions_for_developer=request.POST.get('questions_for_developer', ''),
+            additional_features_wanted=request.POST.get('additional_features_wanted', ''),
+        )
+
+        # Mark setup as complete
+        profile.setup_completed = True
+        profile.setup_completed_at = timezone.now()
+        profile.save()
+
+        # Try to send email to Jake
+        try:
+            send_mail(
+                subject=f'Soggy Potatoes Setup Completed by {request.user.username}',
+                message=response.to_email_text(),
+                from_email=settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@soggypotatoes.com',
+                recipient_list=['jacob@resourcerealtygroupmi.com'],
+                fail_silently=True,
+            )
+            response.notification_sent = True
+            response.save()
+        except Exception as e:
+            logger.error(f'Failed to send setup notification email: {e}')
+
+        # Redirect to completion page with response text
+        return render(request, 'shop/setup/complete.html', {
+            'response_text': response.to_email_text()
+        })
+
+    return render(request, 'shop/setup/wizard.html')
+
+
+@login_required
+def skip_setup(request):
+    """Allow user to skip setup wizard."""
+    if not request.user.is_superuser:
+        return redirect('shop:home')
+
+    try:
+        profile = request.user.setup_profile
+    except AdminSetupProfile.DoesNotExist:
+        profile = AdminSetupProfile.objects.create(user=request.user)
+
+    profile.setup_completed = True
+    profile.setup_completed_at = timezone.now()
+    profile.save()
+
+    messages.info(request, 'Setup skipped. You can always run the setup wizard later from the admin panel.')
+    return redirect('admin:index')
 
 
 class HomeView(TemplateView):

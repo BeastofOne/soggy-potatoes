@@ -1,0 +1,587 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Welcome to Soggy Potatoes - Setup Wizard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .setup-wizard {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .wizard-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        color: white;
+    }
+
+    .wizard-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+
+    .wizard-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .setup-section {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        border-left: 5px solid #667eea;
+    }
+
+    .setup-section h2 {
+        color: #333;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .setup-section h2 .step-number {
+        background: #667eea;
+        color: white;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+    }
+
+    .section-description {
+        color: #666;
+        margin-bottom: 20px;
+        padding-left: 45px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #444;
+    }
+
+    .form-group label .required {
+        color: #e74c3c;
+    }
+
+    .form-group .help-text {
+        font-size: 0.85rem;
+        color: #888;
+        margin-top: 5px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e1e1e1;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    }
+
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .checkbox-group:hover {
+        background: #e9ecef;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: #667eea;
+    }
+
+    .checkbox-group label {
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .info-box {
+        background: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        padding: 15px 20px;
+        border-radius: 0 8px 8px 0;
+        margin-bottom: 20px;
+    }
+
+    .info-box.warning {
+        background: #fff3e0;
+        border-left-color: #ff9800;
+    }
+
+    .info-box.success {
+        background: #e8f5e9;
+        border-left-color: #4caf50;
+    }
+
+    .info-box p {
+        margin: 0;
+        color: #333;
+    }
+
+    .info-box a {
+        color: #1976d2;
+        font-weight: 600;
+    }
+
+    .submit-section {
+        text-align: center;
+        padding: 40px 20px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+    }
+
+    .submit-section h3 {
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .submit-section p {
+        color: #666;
+        margin-bottom: 25px;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 15px 50px;
+        font-size: 1.2rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-skip {
+        background: transparent;
+        border: 2px solid #ccc;
+        color: #666;
+        padding: 12px 30px;
+        font-size: 1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        margin-left: 15px;
+        transition: all 0.3s;
+    }
+
+    .btn-skip:hover {
+        border-color: #999;
+        color: #333;
+    }
+
+    .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: #e1e1e1;
+        z-index: 1000;
+    }
+
+    .progress-bar .progress {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        width: 0%;
+        transition: width 0.3s;
+    }
+
+    @media (max-width: 768px) {
+        .wizard-header h1 {
+            font-size: 1.8rem;
+        }
+
+        .setup-section {
+            padding: 20px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="progress-bar">
+    <div class="progress" id="formProgress"></div>
+</div>
+
+<div class="setup-wizard">
+    <div class="wizard-header">
+        <h1>Welcome to Soggy Potatoes!</h1>
+        <p>Let's get your sticker shop set up. This will only take a few minutes.</p>
+        <p><small>Hi {{ user.first_name }}! Fill this out and Jake will configure everything for you.</small></p>
+    </div>
+
+    <form method="post" id="setupForm">
+        {% csrf_token %}
+
+        <!-- Step 1: Store Info -->
+        <div class="setup-section">
+            <h2><span class="step-number">1</span> Your Store</h2>
+            <p class="section-description">Basic information about your sticker shop.</p>
+
+            <div class="form-group">
+                <label for="store_name">Store Name <span class="required">*</span></label>
+                <input type="text" class="form-control" id="store_name" name="store_name"
+                       value="Soggy Potatoes" required>
+                <p class="help-text">This appears at the top of your website and in emails.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="store_tagline">Tagline</label>
+                <input type="text" class="form-control" id="store_tagline" name="store_tagline"
+                       placeholder="e.g., Cute handmade stickers for every occasion!">
+                <p class="help-text">A short phrase that describes your shop.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="store_email">Store Contact Email <span class="required">*</span></label>
+                <input type="email" class="form-control" id="store_email" name="store_email"
+                       value="{{ user.email }}" required>
+                <p class="help-text">Where customers can reach you for support.</p>
+            </div>
+        </div>
+
+        <!-- Step 2: Business Info -->
+        <div class="setup-section">
+            <h2><span class="step-number">2</span> Business Details</h2>
+            <p class="section-description">Optional - for invoices and legal stuff.</p>
+
+            <div class="form-group">
+                <label for="business_name">Legal Business Name</label>
+                <input type="text" class="form-control" id="business_name" name="business_name"
+                       placeholder="e.g., Soggy Potatoes LLC (or leave blank if just your name)">
+            </div>
+
+            <div class="form-group">
+                <label for="business_address">Business Address</label>
+                <textarea class="form-control" id="business_address" name="business_address"
+                          placeholder="Street address, City, State, ZIP (for return address on packages)"></textarea>
+            </div>
+        </div>
+
+        <!-- Step 3: Payments -->
+        <div class="setup-section">
+            <h2><span class="step-number">3</span> Payments (Stripe)</h2>
+            <p class="section-description">So you can get paid for your stickers!</p>
+
+            <div class="info-box">
+                <p><strong>What is Stripe?</strong> It's how you accept credit card payments. It's free to create an account - they just take a small fee (2.9% + 30 cents) when you make a sale.</p>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="has_stripe_account" name="has_stripe_account" value="true">
+                <label for="has_stripe_account">I already have a Stripe account</label>
+            </div>
+
+            <div id="stripeFields" style="margin-top: 20px; display: none;">
+                <div class="form-group">
+                    <label for="stripe_account_email">Stripe Account Email</label>
+                    <input type="email" class="form-control" id="stripe_account_email" name="stripe_account_email"
+                           placeholder="The email you use for Stripe">
+                </div>
+
+                <div class="info-box warning">
+                    <p><strong>To get your Stripe keys:</strong></p>
+                    <ol style="margin: 10px 0 0 20px;">
+                        <li>Go to <a href="https://dashboard.stripe.com/apikeys" target="_blank">dashboard.stripe.com/apikeys</a></li>
+                        <li>Copy your "Publishable key" (starts with pk_)</li>
+                        <li>Copy your "Secret key" (starts with sk_)</li>
+                    </ol>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="stripe_public_key">Publishable Key</label>
+                        <input type="text" class="form-control" id="stripe_public_key" name="stripe_public_key"
+                               placeholder="pk_live_xxxxx or pk_test_xxxxx">
+                    </div>
+                    <div class="form-group">
+                        <label for="stripe_secret_key">Secret Key</label>
+                        <input type="text" class="form-control" id="stripe_secret_key" name="stripe_secret_key"
+                               placeholder="sk_live_xxxxx or sk_test_xxxxx">
+                    </div>
+                </div>
+            </div>
+
+            <div id="noStripeHelp" style="margin-top: 20px;">
+                <div class="info-box success">
+                    <p><strong>No Stripe account yet?</strong> No problem! <a href="https://dashboard.stripe.com/register" target="_blank">Create one here</a> (takes 5 minutes), then come back and fill this in. Or Jake can help you set it up later.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Shipping -->
+        <div class="setup-section">
+            <h2><span class="step-number">4</span> Shipping</h2>
+            <p class="section-description">How much do you want to charge for shipping?</p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="domestic_shipping_price">Domestic Shipping (US) <span class="required">*</span></label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 15px; top: 12px; color: #666;">$</span>
+                        <input type="number" step="0.01" class="form-control" id="domestic_shipping_price"
+                               name="domestic_shipping_price" placeholder="0.00" style="padding-left: 30px;" required>
+                    </div>
+                    <p class="help-text">e.g., $4.00 for a stamp + envelope</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="free_shipping_threshold">Free Shipping Over</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 15px; top: 12px; color: #666;">$</span>
+                        <input type="number" step="0.01" class="form-control" id="free_shipping_threshold"
+                               name="free_shipping_threshold" placeholder="Leave blank for none" style="padding-left: 30px;">
+                    </div>
+                    <p class="help-text">e.g., Free shipping on orders over $25</p>
+                </div>
+            </div>
+
+            <div class="checkbox-group" style="margin-top: 10px;">
+                <input type="checkbox" id="ships_internationally" name="ships_internationally" value="true">
+                <label for="ships_internationally">I want to ship internationally</label>
+            </div>
+
+            <div id="internationalFields" style="margin-top: 20px; display: none;">
+                <div class="form-group">
+                    <label for="international_shipping_price">International Shipping</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 15px; top: 12px; color: #666;">$</span>
+                        <input type="number" step="0.01" class="form-control" id="international_shipping_price"
+                               name="international_shipping_price" placeholder="0.00" style="padding-left: 30px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Products -->
+        <div class="setup-section">
+            <h2><span class="step-number">5</span> Your Products</h2>
+            <p class="section-description">Tell us about your stickers so we can set up categories.</p>
+
+            <div class="form-group">
+                <label for="product_categories">What categories of stickers do you sell?</label>
+                <textarea class="form-control" id="product_categories" name="product_categories"
+                          placeholder="e.g., Animals, Food, Seasonal, Inspirational Quotes, Custom Orders..."></textarea>
+                <p class="help-text">List the types/categories - we'll create these for you.</p>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="estimated_product_count">How many products to start?</label>
+                    <select class="form-control" id="estimated_product_count" name="estimated_product_count">
+                        <option value="">Select...</option>
+                        <option value="1-10">1-10 stickers</option>
+                        <option value="11-25">11-25 stickers</option>
+                        <option value="26-50">26-50 stickers</option>
+                        <option value="51-100">51-100 stickers</option>
+                        <option value="100+">100+ stickers</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="price_range_low">Lowest Price</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 15px; top: 12px; color: #666;">$</span>
+                        <input type="number" step="0.01" class="form-control" id="price_range_low"
+                               name="price_range_low" placeholder="1.00" style="padding-left: 30px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="price_range_high">Highest Price</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 15px; top: 12px; color: #666;">$</span>
+                        <input type="number" step="0.01" class="form-control" id="price_range_high"
+                               name="price_range_high" placeholder="10.00" style="padding-left: 30px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 6: Social Media -->
+        <div class="setup-section">
+            <h2><span class="step-number">6</span> Social Media</h2>
+            <p class="section-description">Optional - we can add links to your socials on the site.</p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="instagram_handle">Instagram</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 15px; top: 12px; color: #666;">@</span>
+                        <input type="text" class="form-control" id="instagram_handle" name="instagram_handle"
+                               placeholder="yourhandle" style="padding-left: 35px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="tiktok_handle">TikTok</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 15px; top: 12px; color: #666;">@</span>
+                        <input type="text" class="form-control" id="tiktok_handle" name="tiktok_handle"
+                               placeholder="yourhandle" style="padding-left: 35px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="etsy_store_url">Etsy Store URL</label>
+                <input type="url" class="form-control" id="etsy_store_url" name="etsy_store_url"
+                       placeholder="https://www.etsy.com/shop/yourshop">
+            </div>
+
+            <div class="form-group">
+                <label for="other_social">Other Social Media / Links</label>
+                <textarea class="form-control" id="other_social" name="other_social"
+                          placeholder="Any other links you want on your site (YouTube, Pinterest, etc.)"></textarea>
+            </div>
+        </div>
+
+        <!-- Step 7: Features -->
+        <div class="setup-section">
+            <h2><span class="step-number">7</span> Features</h2>
+            <p class="section-description">What features do you want enabled?</p>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="enable_reviews" name="enable_reviews" value="true" checked>
+                <label for="enable_reviews"><strong>Product Reviews</strong> - Let customers leave reviews on products</label>
+            </div>
+
+            <div class="checkbox-group" style="margin-top: 10px;">
+                <input type="checkbox" id="enable_wishlist" name="enable_wishlist" value="true" checked>
+                <label for="enable_wishlist"><strong>Wishlists</strong> - Let customers save products for later</label>
+            </div>
+
+            <div class="checkbox-group" style="margin-top: 10px;">
+                <input type="checkbox" id="enable_forum" name="enable_forum" value="true" checked>
+                <label for="enable_forum"><strong>Community Forum</strong> - A place for customers to chat and share</label>
+            </div>
+        </div>
+
+        <!-- Step 8: Questions -->
+        <div class="setup-section">
+            <h2><span class="step-number">8</span> Anything Else?</h2>
+            <p class="section-description">Questions, ideas, or things you want Jake to know.</p>
+
+            <div class="form-group">
+                <label for="questions_for_developer">Questions for Jake</label>
+                <textarea class="form-control" id="questions_for_developer" name="questions_for_developer"
+                          placeholder="Any questions about how the site works, things you're confused about, etc."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="additional_features_wanted">Features You'd Like</label>
+                <textarea class="form-control" id="additional_features_wanted" name="additional_features_wanted"
+                          placeholder="Any features you'd like that aren't mentioned above? Discount codes? Gift cards? Bundles? Let me know!"></textarea>
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="submit-section">
+            <h3>All Done!</h3>
+            <p>Click submit and Jake will receive your responses and set everything up.</p>
+            <button type="submit" class="btn-submit">Submit Setup</button>
+            <button type="button" class="btn-skip" onclick="skipSetup()">Skip for Now</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Toggle Stripe fields
+    document.getElementById('has_stripe_account').addEventListener('change', function() {
+        document.getElementById('stripeFields').style.display = this.checked ? 'block' : 'none';
+        document.getElementById('noStripeHelp').style.display = this.checked ? 'none' : 'block';
+    });
+
+    // Toggle international shipping fields
+    document.getElementById('ships_internationally').addEventListener('change', function() {
+        document.getElementById('internationalFields').style.display = this.checked ? 'block' : 'none';
+    });
+
+    // Progress bar
+    const form = document.getElementById('setupForm');
+    const inputs = form.querySelectorAll('input, textarea, select');
+    const progressBar = document.getElementById('formProgress');
+
+    function updateProgress() {
+        let filled = 0;
+        let total = 0;
+
+        inputs.forEach(input => {
+            if (input.type === 'checkbox') return;
+            if (input.offsetParent === null) return; // Skip hidden fields
+
+            total++;
+            if (input.value.trim()) filled++;
+        });
+
+        const progress = total > 0 ? (filled / total) * 100 : 0;
+        progressBar.style.width = progress + '%';
+    }
+
+    inputs.forEach(input => {
+        input.addEventListener('input', updateProgress);
+        input.addEventListener('change', updateProgress);
+    });
+
+    updateProgress();
+
+    // Skip setup
+    function skipSetup() {
+        if (confirm('Are you sure you want to skip setup? You can always fill this out later from the admin panel.')) {
+            window.location.href = '{% url "shop:skip_setup" %}';
+        }
+    }
+</script>
+{% endblock %}

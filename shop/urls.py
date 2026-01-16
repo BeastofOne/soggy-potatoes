@@ -4,6 +4,10 @@ from . import views
 app_name = 'shop'
 
 urlpatterns = [
+    # Setup wizard (for first-time superusers)
+    path('setup/', views.setup_wizard, name='setup_wizard'),
+    path('setup/skip/', views.skip_setup, name='skip_setup'),
+
     # Main pages
     path('', views.HomeView.as_view(), name='home'),
     path('about/', views.AboutView.as_view(), name='about'),

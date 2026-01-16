@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Category, Product, Cart, CartItem, Wishlist, Review, Order, OrderItem
+from .models import Category, Product, Cart, CartItem, Wishlist, Review, Order, OrderItem, AdminSetupProfile, SetupWizardResponse
 
 # Customize admin site
 admin.site.site_header = "Soggy Potatoes Admin"
@@ -133,3 +133,60 @@ class OrderAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+
+
+# Setup Wizard Admin
+@admin.register(AdminSetupProfile)
+class AdminSetupProfileAdmin(admin.ModelAdmin):
+    list_display = ['user', 'setup_completed', 'setup_completed_at', 'created_at']
+    list_filter = ['setup_completed']
+    search_fields = ['user__username', 'user__email']
+    readonly_fields = ['created_at']
+
+    def has_add_permission(self, request):
+        return False  # Profiles are created automatically
+
+
+@admin.register(SetupWizardResponse)
+class SetupWizardResponseAdmin(admin.ModelAdmin):
+    list_display = ['user', 'store_name', 'has_stripe_account', 'notification_sent', 'submitted_at']
+    list_filter = ['has_stripe_account', 'notification_sent', 'submitted_at']
+    search_fields = ['user__username', 'store_name', 'store_email']
+    readonly_fields = ['submitted_at', 'user']
+
+    fieldsets = (
+        ('Submitted By', {
+            'fields': ('user', 'submitted_at')
+        }),
+        ('Store Information', {
+            'fields': ('store_name', 'store_tagline', 'store_email')
+        }),
+        ('Business Information', {
+            'fields': ('business_name', 'business_address')
+        }),
+        ('Stripe Setup', {
+            'fields': ('has_stripe_account', 'stripe_account_email', 'stripe_public_key', 'stripe_secret_key'),
+            'description': 'IMPORTANT: Copy these keys to environment variables in Render!'
+        }),
+        ('Shipping', {
+            'fields': ('ships_internationally', 'domestic_shipping_price', 'international_shipping_price', 'free_shipping_threshold')
+        }),
+        ('Products', {
+            'fields': ('product_categories', 'estimated_product_count', 'price_range_low', 'price_range_high')
+        }),
+        ('Social Media', {
+            'fields': ('instagram_handle', 'tiktok_handle', 'etsy_store_url', 'other_social')
+        }),
+        ('Features', {
+            'fields': ('enable_reviews', 'enable_wishlist', 'enable_forum')
+        }),
+        ('Additional', {
+            'fields': ('questions_for_developer', 'additional_features_wanted')
+        }),
+        ('Status', {
+            'fields': ('notification_sent',)
+        }),
+    )
+
+    def has_add_permission(self, request):
+        return False  # Responses come from the wizard only

@@ -4,6 +4,137 @@ from django.urls import reverse
 from django.utils.text import slugify
 
 
+class AdminSetupProfile(models.Model):
+    """Tracks whether admin users have completed the setup wizard."""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='setup_profile')
+    setup_completed = models.BooleanField(default=False)
+    setup_completed_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - Setup {'Complete' if self.setup_completed else 'Pending'}"
+
+
+class SetupWizardResponse(models.Model):
+    """Stores responses from the setup wizard."""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='setup_responses')
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    # Store info
+    store_name = models.CharField(max_length=200, blank=True)
+    store_tagline = models.CharField(max_length=300, blank=True)
+    store_email = models.EmailField(blank=True)
+
+    # Business info
+    business_name = models.CharField(max_length=200, blank=True)
+    business_address = models.TextField(blank=True)
+
+    # Stripe info (just notes - actual keys go in env vars)
+    has_stripe_account = models.BooleanField(default=False)
+    stripe_account_email = models.EmailField(blank=True)
+    stripe_public_key = models.CharField(max_length=200, blank=True)
+    stripe_secret_key = models.CharField(max_length=200, blank=True)
+
+    # Shipping info
+    ships_internationally = models.BooleanField(default=False)
+    domestic_shipping_price = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    international_shipping_price = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    free_shipping_threshold = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+
+    # Product info
+    product_categories = models.TextField(blank=True, help_text="Comma-separated list of categories")
+    estimated_product_count = models.CharField(max_length=50, blank=True)
+    price_range_low = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    price_range_high = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+
+    # Social media
+    instagram_handle = models.CharField(max_length=100, blank=True)
+    tiktok_handle = models.CharField(max_length=100, blank=True)
+    etsy_store_url = models.URLField(blank=True)
+    other_social = models.TextField(blank=True)
+
+    # Preferences
+    enable_reviews = models.BooleanField(default=True)
+    enable_wishlist = models.BooleanField(default=True)
+    enable_forum = models.BooleanField(default=True)
+
+    # Additional notes
+    questions_for_developer = models.TextField(blank=True)
+    additional_features_wanted = models.TextField(blank=True)
+
+    # Email notification sent
+    notification_sent = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Setup by {self.user.username} on {self.submitted_at}"
+
+    def to_email_text(self):
+        """Format the response for email/copy-paste."""
+        return f"""
+========================================
+SOGGY POTATOES SETUP WIZARD RESPONSE
+Submitted by: {self.user.username}
+Date: {self.submitted_at}
+========================================
+
+STORE INFORMATION
+-----------------
+Store Name: {self.store_name}
+Tagline: {self.store_tagline}
+Contact Email: {self.store_email}
+
+BUSINESS INFORMATION
+--------------------
+Business Name: {self.business_name}
+Address: {self.business_address}
+
+STRIPE PAYMENT SETUP
+--------------------
+Has Stripe Account: {'Yes' if self.has_stripe_account else 'No'}
+Stripe Account Email: {self.stripe_account_email}
+Stripe Public Key: {self.stripe_public_key}
+Stripe Secret Key: {self.stripe_secret_key}
+
+SHIPPING SETTINGS
+-----------------
+Ships Internationally: {'Yes' if self.ships_internationally else 'No'}
+Domestic Shipping Price: ${self.domestic_shipping_price or 'Not set'}
+International Shipping Price: ${self.international_shipping_price or 'Not set'}
+Free Shipping Threshold: ${self.free_shipping_threshold or 'Not set'}
+
+PRODUCT INFORMATION
+-------------------
+Categories to Create: {self.product_categories}
+Estimated Number of Products: {self.estimated_product_count}
+Price Range: ${self.price_range_low or '?'} - ${self.price_range_high or '?'}
+
+SOCIAL MEDIA
+------------
+Instagram: {self.instagram_handle}
+TikTok: {self.tiktok_handle}
+Etsy Store: {self.etsy_store_url}
+Other: {self.other_social}
+
+FEATURE PREFERENCES
+-------------------
+Enable Product Reviews: {'Yes' if self.enable_reviews else 'No'}
+Enable Wishlist: {'Yes' if self.enable_wishlist else 'No'}
+Enable Community Forum: {'Yes' if self.enable_forum else 'No'}
+
+QUESTIONS FOR DEVELOPER
+-----------------------
+{self.questions_for_developer or 'None'}
+
+ADDITIONAL FEATURES WANTED
+--------------------------
+{self.additional_features_wanted or 'None'}
+
+========================================
+END OF SETUP RESPONSE
+========================================
+"""
+
+
 class Category(models.Model):
     """Product category for organizing stickers."""
     name = models.CharField(max_length=100)
