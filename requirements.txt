@@ -1,0 +1,32 @@
+# Core Framework
+Django>=5.0,<6.0
+
+# Database
+psycopg2-binary>=2.9  # PostgreSQL adapter
+
+# Environment & Configuration
+python-dotenv>=1.0    # Load .env files
+dj-database-url>=2.0  # Database URL parsing
+
+# Security
+django-cors-headers>=4.0  # CORS handling
+
+# Forms & Validation
+django-crispy-forms>=2.0  # Better form rendering
+crispy-bootstrap5>=2024.0  # Bootstrap 5 template pack
+
+# Images
+Pillow>=10.0  # Image processing for product photos
+
+# Production (needed later)
+gunicorn>=21.0  # Production WSGI server
+whitenoise>=6.0  # Static file serving
+
+# Development Tools
+django-debug-toolbar>=4.0  # Debug toolbar (dev only)
+
+# Future additions (commented out until needed):
+# stripe>=7.0  # Payment processing (Phase 6)
+# django-storages>=1.14  # AWS S3 storage (future)
+# boto3>=1.34  # AWS SDK (future)
+# sendgrid>=6.0  # Email service (Phase 4)
