@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Review Report - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <a href="{% url 'users:admin_reports' %}" class="text-muted text-decoration-none">
+                <i class="bi bi-arrow-left"></i> Back to Reports
+            </a>
+
+            <div class="card mt-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0"><i class="bi bi-flag"></i> Review Report</h4>
+                    <span class="badge
+                        {% if report.status == 'pending' %}bg-danger
+                        {% elif report.status == 'reviewed' %}bg-info
+                        {% elif report.status == 'action_taken' %}bg-success
+                        {% else %}bg-secondary{% endif %}">
+                        {{ report.get_status_display }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <!-- Report Details -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6>Report Information</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Reported By:</th>
+                                    <td>
+                                        <a href="{% url 'users:public_profile' report.reporter.username %}">
+                                            {{ report.reporter.username }}
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Reason:</th>
+                                    <td><span class="badge bg-warning text-dark">{{ report.get_reason_display }}</span></td>
+                                </tr>
+                                <tr>
+                                    <th>Date:</th>
+                                    <td>{{ report.created_at|date:"M d, Y g:i A" }}</td>
+                                </tr>
+                                {% if report.details %}
+                                <tr>
+                                    <th>Details:</th>
+                                    <td>{{ report.details }}</td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Reported Content</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Type:</th>
+                                    <td>{% if report.thread %}Thread{% else %}Post{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <th>Author:</th>
+                                    <td>
+                                        {% if report.thread %}
+                                        <a href="{% url 'users:public_profile' report.thread.author.username %}">
+                                            {{ report.thread.author.username }}
+                                        </a>
+                                        {% else %}
+                                        <a href="{% url 'users:public_profile' report.post.author.username %}">
+                                            {{ report.post.author.username }}
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Link:</th>
+                                    <td>
+                                        {% if report.thread %}
+                                        <a href="{{ report.thread.get_absolute_url }}" target="_blank">
+                                            View Thread <i class="bi bi-box-arrow-up-right"></i>
+                                        </a>
+                                        {% else %}
+                                        <a href="{{ report.post.thread.get_absolute_url }}#post-{{ report.post.pk }}" target="_blank">
+                                            View Post <i class="bi bi-box-arrow-up-right"></i>
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Reported Content Preview -->
+                    <div class="card bg-light mb-4">
+                        <div class="card-header">
+                            <strong>Content Preview</strong>
+                        </div>
+                        <div class="card-body">
+                            {% if report.thread %}
+                            <h5>{{ report.thread.title }}</h5>
+                            <p>{{ report.thread.content|linebreaks|truncatewords:100 }}</p>
+                            {% else %}
+                            <p>{{ report.post.content|linebreaks|truncatewords:100 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if report.status == 'pending' %}
+                    <!-- Action Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Admin Notes</label>
+                            <textarea name="admin_notes" class="form-control" rows="3"
+                                      placeholder="Optional notes about this report...">{{ report.admin_notes }}</textarea>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button type="submit" name="action" value="dismiss" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Dismiss Report
+                            </button>
+                            <button type="submit" name="action" value="delete_content" class="btn btn-warning"
+                                    onclick="return confirm('Delete this content?');">
+                                <i class="bi bi-trash"></i> Delete Content
+                            </button>
+                            <button type="submit" name="action" value="ban_user" class="btn btn-danger"
+                                    onclick="return confirm('Ban this user? This will also mark the report as resolved.');">
+                                <i class="bi bi-person-x"></i> Ban User & Delete
+                            </button>
+                        </div>
+                    </form>
+                    {% else %}
+                    <!-- Already Reviewed -->
+                    <div class="alert alert-info">
+                        <strong>This report has been reviewed.</strong>
+                        {% if report.reviewed_by %}
+                        <br>Reviewed by {{ report.reviewed_by.username }} on {{ report.reviewed_at|date:"M d, Y g:i A" }}
+                        {% endif %}
+                        {% if report.admin_notes %}
+                        <hr>
+                        <strong>Admin Notes:</strong> {{ report.admin_notes }}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

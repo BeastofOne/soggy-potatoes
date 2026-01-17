@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Products - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{% url 'users:admin_dashboard' %}" class="text-muted text-decoration-none">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+            <h1 class="mt-2"><i class="bi bi-box-seam"></i> Manage Products</h1>
+        </div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+            <i class="bi bi-plus-circle"></i> Add New Product
+        </button>
+    </div>
+
+    <!-- Products List -->
+    <div class="card">
+        <div class="card-body p-0">
+            {% if products %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 60px;">Image</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>
+                                {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                                     class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                {% else %}
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                                     style="width: 50px; height: 50px;">
+                                    <i class="bi bi-image text-muted"></i>
+                                </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <strong>{{ product.name }}</strong>
+                                {% if product.is_featured %}
+                                <span class="badge bg-warning text-dark ms-1">Featured</span>
+                                {% endif %}
+                                {% if product.is_on_sale %}
+                                <span class="badge bg-danger ms-1">Sale</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ product.category.name|default:"Uncategorized" }}</td>
+                            <td>
+                                {% if product.sale_price %}
+                                <span class="text-decoration-line-through text-muted">${{ product.price }}</span>
+                                <span class="text-danger">${{ product.sale_price }}</span>
+                                {% else %}
+                                ${{ product.price }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="{% if product.stock == 0 %}text-danger{% elif product.stock < 10 %}text-warning{% else %}text-success{% endif %}">
+                                    {{ product.stock }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge {% if product.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {% if product.is_active %}Active{% else %}Inactive{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary edit-product-btn"
+                                        data-bs-toggle="modal" data-bs-target="#editProductModal"
+                                        data-product-id="{{ product.pk }}"
+                                        data-product-name="{{ product.name }}"
+                                        data-product-description="{{ product.description }}"
+                                        data-product-price="{{ product.price }}"
+                                        data-product-sale-price="{{ product.sale_price|default:'' }}"
+                                        data-product-stock="{{ product.stock }}"
+                                        data-product-category="{{ product.category.pk|default:'' }}"
+                                        data-product-active="{{ product.is_active|yesno:'true,false' }}"
+                                        data-product-featured="{{ product.is_featured|yesno:'true,false' }}">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger delete-product-btn"
+                                        data-bs-toggle="modal" data-bs-target="#deleteProductModal"
+                                        data-product-id="{{ product.pk }}"
+                                        data-product-name="{{ product.name }}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <a href="{{ product.get_absolute_url }}" class="btn btn-sm btn-outline-secondary" target="_blank">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-box-seam fs-1 text-muted"></i>
+                <p class="mt-2 text-muted">No products yet. Add your first product!</p>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                    <i class="bi bi-plus-circle"></i> Add New Product
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Add Product Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="create">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Add New Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label class="form-label">Product Name *</label>
+                                <input type="text" name="name" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea name="description" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Price *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" name="price" class="form-control" step="0.01" min="0" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Stock</label>
+                                        <input type="number" name="stock" class="form-control" min="0" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Category</label>
+                                <select name="category" class="form-select">
+                                    <option value="">-- No Category --</option>
+                                    {% for cat in categories %}
+                                    <option value="{{ cat.pk }}">{{ cat.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Product Image *</label>
+                                <input type="file" name="image" class="form-control" accept="image/*" required>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" name="is_active" class="form-check-input" id="addIsActive" checked>
+                                    <label class="form-check-label" for="addIsActive">Active (visible in shop)</label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" name="is_featured" class="form-check-input" id="addIsFeatured">
+                                    <label class="form-check-label" for="addIsFeatured">Featured product</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Add Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Product Modal -->
+<div class="modal fade" id="editProductModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update">
+                <input type="hidden" name="product_id" id="editProductId">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil"></i> Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label class="form-label">Product Name *</label>
+                                <input type="text" name="name" id="editProductName" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea name="description" id="editProductDescription" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Price *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" name="price" id="editProductPrice" class="form-control" step="0.01" min="0" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Sale Price</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" name="sale_price" id="editProductSalePrice" class="form-control" step="0.01" min="0">
+                                        </div>
+                                        <small class="text-muted">Leave blank for no sale</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Stock</label>
+                                        <input type="number" name="stock" id="editProductStock" class="form-control" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Category</label>
+                                <select name="category" id="editProductCategory" class="form-select">
+                                    <option value="">-- No Category --</option>
+                                    {% for cat in categories %}
+                                    <option value="{{ cat.pk }}">{{ cat.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Change Image</label>
+                                <input type="file" name="image" class="form-control" accept="image/*">
+                                <small class="text-muted">Leave blank to keep current</small>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" name="is_active" class="form-check-input" id="editIsActive">
+                                    <label class="form-check-label" for="editIsActive">Active (visible in shop)</label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" name="is_featured" class="form-check-input" id="editIsFeatured">
+                                    <label class="form-check-label" for="editIsFeatured">Featured product</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Product Modal -->
+<div class="modal fade" id="deleteProductModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="product_id" id="deleteProductId">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger"><i class="bi bi-trash"></i> Delete Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete <strong id="deleteProductName"></strong>?</p>
+                    <p class="text-danger"><strong>This action cannot be undone.</strong></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Delete Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Edit product button click
+    document.querySelectorAll('.edit-product-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('editProductId').value = this.dataset.productId;
+            document.getElementById('editProductName').value = this.dataset.productName;
+            document.getElementById('editProductDescription').value = this.dataset.productDescription;
+            document.getElementById('editProductPrice').value = this.dataset.productPrice;
+            document.getElementById('editProductSalePrice').value = this.dataset.productSalePrice;
+            document.getElementById('editProductStock').value = this.dataset.productStock;
+            document.getElementById('editProductCategory').value = this.dataset.productCategory;
+            document.getElementById('editIsActive').checked = this.dataset.productActive === 'true';
+            document.getElementById('editIsFeatured').checked = this.dataset.productFeatured === 'true';
+        });
+    });
+
+    // Delete product button click
+    document.querySelectorAll('.delete-product-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('deleteProductId').value = this.dataset.productId;
+            document.getElementById('deleteProductName').textContent = this.dataset.productName;
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

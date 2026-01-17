@@ -1,6 +1,28 @@
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.contrib.auth import logout
+from django.contrib import messages
 from .models import AdminSetupProfile
+
+
+class BannedUserMiddleware:
+    """
+    Middleware to prevent banned users from accessing the site.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if request.user.is_authenticated:
+            # Check if user is banned
+            if hasattr(request.user, 'ban') and request.user.ban.is_active:
+                reason = request.user.ban.reason
+                logout(request)
+                messages.error(request, f'Your account has been suspended. Reason: {reason}')
+                return redirect('users:login')
+
+        return self.get_response(request)
 
 
 class SetupWizardMiddleware:

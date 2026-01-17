@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Award Badge to {{ target_user.username }} - Admin{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <a href="{% url 'users:public_profile' target_user.username %}" class="text-muted text-decoration-none">
+                <i class="bi bi-arrow-left"></i> Back to {{ target_user.username }}'s Profile
+            </a>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="bi bi-award"></i> Award Badge to {{ target_user.username }}</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Current Badges -->
+                    {% if user_badges %}
+                    <h6>Current Badges:</h6>
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+                        {% for ub in user_badges %}
+                        <div class="badge-item text-center p-2 border rounded" style="width: 100px;">
+                            <img src="{{ ub.badge.image.url }}" alt="{{ ub.badge.name }}"
+                                 class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                            <small class="d-block text-truncate">{{ ub.badge.name }}</small>
+                            <a href="{% url 'users:remove_badge' target_user.username ub.badge.pk %}"
+                               class="btn btn-sm btn-outline-danger mt-1"
+                               onclick="return confirm('Remove this badge?');">
+                                <i class="bi bi-x"></i>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Award New Badge -->
+                    {% if badges %}
+                    <h6>Award a Badge:</h6>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            {% for badge in badges %}
+                            <div class="col-md-4 col-6 mb-3">
+                                <div class="card h-100 badge-select-card" style="cursor: pointer;"
+                                     onclick="document.getElementById('badge_{{ badge.pk }}').checked = true; this.closest('form').querySelectorAll('.badge-select-card').forEach(c => c.classList.remove('border-primary')); this.classList.add('border-primary');">
+                                    <input type="radio" name="badge_id" id="badge_{{ badge.pk }}" value="{{ badge.pk }}" class="d-none">
+                                    <div class="card-body text-center p-2">
+                                        <img src="{{ badge.image.url }}" alt="{{ badge.name }}"
+                                             class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                                        <small class="d-block mt-1">{{ badge.name }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">
+                            <i class="bi bi-award"></i> Award Selected Badge
+                        </button>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> No badges created yet.
+                        <a href="{% url 'users:admin_badges' %}">Create some badges first!</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

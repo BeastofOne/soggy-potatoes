@@ -38,4 +38,30 @@ urlpatterns = [
          auth_views.PasswordResetCompleteView.as_view(
              template_name='users/password_reset_complete.html'
          ), name='password_reset_complete'),
+
+    # =============================================
+    # SUPERUSER ADMIN DASHBOARD URLS
+    # =============================================
+    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('admin-dashboard/products/', views.admin_products, name='admin_products'),
+    path('admin-dashboard/badges/', views.admin_badges, name='admin_badges'),
+    path('admin-dashboard/reports/', views.admin_reports, name='admin_reports'),
+    path('admin-dashboard/reports/<int:report_id>/', views.handle_report, name='handle_report'),
+
+    # Badge management
+    path('u/<str:username>/award-badge/', views.award_badge, name='award_badge'),
+    path('u/<str:username>/remove-badge/<int:badge_id>/', views.remove_badge, name='remove_badge'),
+    path('u/<str:username>/badges/', views.get_user_badges, name='get_user_badges'),
+
+    # User moderation
+    path('u/<str:username>/ban/', views.ban_user, name='ban_user'),
+    path('u/<str:username>/unban/', views.unban_user, name='unban_user'),
+
+    # Content moderation
+    path('mod/thread/<int:thread_id>/delete/', views.delete_thread, name='delete_thread'),
+    path('mod/post/<int:post_id>/delete/', views.delete_post, name='delete_post'),
+
+    # Reporting (for all users)
+    path('report/post/<int:post_id>/', views.report_post, name='report_post'),
+    path('report/thread/<int:thread_id>/', views.report_thread, name='report_thread'),
 ]

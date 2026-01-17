@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Forum Report</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background-color: #dc3545; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="margin: 0; font-size: 24px;">New Content Report</h1>
+    </div>
+
+    <div style="background-color: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px;">
+        <p>Hi Joana!</p>
+
+        <p>A user has reported content on the forum. Please review it when you have a chance.</p>
+
+        <div style="background-color: white; border-left: 4px solid #dc3545; padding: 15px; margin: 20px 0; border-radius: 4px;">
+            <h3 style="margin-top: 0; color: #dc3545;">Report Details</h3>
+
+            <p><strong>Reported By:</strong> {{ reporter.username }}</p>
+            <p><strong>Reason:</strong> {{ report.get_reason_display }}</p>
+            {% if report.details %}
+            <p><strong>Details:</strong> {{ report.details }}</p>
+            {% endif %}
+
+            {% if thread %}
+            <p><strong>Type:</strong> Thread</p>
+            <p><strong>Title:</strong> {{ thread.title }}</p>
+            <p><strong>Author:</strong> {{ thread.author.username }}</p>
+            {% elif post %}
+            <p><strong>Type:</strong> Post</p>
+            <p><strong>Thread:</strong> {{ post.thread.title }}</p>
+            <p><strong>Author:</strong> {{ post.author.username }}</p>
+            {% endif %}
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="https://soggy-potatoes.onrender.com/account/admin-dashboard/reports/"
+               style="display: inline-block; background-color: #dc3545; color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: bold;">
+                Review Reports
+            </a>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+
+        <p style="color: #666; font-size: 14px; text-align: center;">
+            This is an automated notification from Soggy Potatoes.
+        </p>
+    </div>
+</body>
+</html>

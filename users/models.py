@@ -58,3 +58,93 @@ class ReservedUsername(models.Model):
 
     class Meta:
         ordering = ['username']
+
+
+class Badge(models.Model):
+    """Custom badge that superusers can award to users."""
+    name = models.CharField(max_length=50, unique=True)
+    image = models.ImageField(upload_to='badges/')
+    description = models.CharField(max_length=200, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='created_badges')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+
+class UserBadge(models.Model):
+    """Badge awarded to a user."""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='badges')
+    badge = models.ForeignKey(Badge, on_delete=models.CASCADE, related_name='awarded_to')
+    awarded_at = models.DateTimeField(auto_now_add=True)
+    awarded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='badges_awarded')
+
+    class Meta:
+        unique_together = ['user', 'badge']
+        ordering = ['-awarded_at']
+
+    def __str__(self):
+        return f"{self.badge.name} awarded to {self.user.username}"
+
+
+class UserBan(models.Model):
+    """Record of banned users."""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='ban')
+    reason = models.TextField()
+    banned_at = models.DateTimeField(auto_now_add=True)
+    banned_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='bans_issued')
+    expires_at = models.DateTimeField(null=True, blank=True, help_text="Leave blank for permanent ban")
+
+    def __str__(self):
+        return f"{self.user.username} banned by {self.banned_by}"
+
+    @property
+    def is_active(self):
+        """Check if ban is currently active."""
+        from django.utils import timezone
+        if self.expires_at is None:
+            return True  # Permanent ban
+        return timezone.now() < self.expires_at
+
+
+class PostReport(models.Model):
+    """Report of a forum post by a user."""
+    REPORT_REASONS = [
+        ('spam', 'Spam'),
+        ('harassment', 'Harassment'),
+        ('inappropriate', 'Inappropriate Content'),
+        ('misinformation', 'Misinformation'),
+        ('other', 'Other'),
+    ]
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('reviewed', 'Reviewed'),
+        ('dismissed', 'Dismissed'),
+        ('action_taken', 'Action Taken'),
+    ]
+
+    # Can report either a thread or a post
+    thread = models.ForeignKey('forum.Thread', on_delete=models.CASCADE, null=True, blank=True, related_name='reports')
+    post = models.ForeignKey('forum.Post', on_delete=models.CASCADE, null=True, blank=True, related_name='reports')
+
+    reporter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reports_made')
+    reason = models.CharField(max_length=20, choices=REPORT_REASONS)
+    details = models.TextField(blank=True, help_text="Additional details about the report")
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reports_reviewed')
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    admin_notes = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        target = f"thread: {self.thread.title}" if self.thread else f"post in: {self.post.thread.title}"
+        return f"Report by {self.reporter.username} on {target}"

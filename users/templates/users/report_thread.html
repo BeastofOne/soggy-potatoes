@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Report Thread - Soggy Potatoes{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <a href="{{ thread.get_absolute_url }}" class="text-muted text-decoration-none">
+                <i class="bi bi-arrow-left"></i> Back to Thread
+            </a>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="bi bi-flag"></i> Report Thread</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Thread Preview -->
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h5>{{ thread.title }}</h5>
+                            <small class="text-muted">by <strong>{{ thread.author.username }}</strong></small>
+                            <p class="mb-0 mt-2">{{ thread.content|truncatewords:50 }}</p>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Reason for Report *</label>
+                            <select name="reason" class="form-select" required>
+                                <option value="">-- Select a reason --</option>
+                                <option value="spam">Spam</option>
+                                <option value="harassment">Harassment</option>
+                                <option value="inappropriate">Inappropriate Content</option>
+                                <option value="misinformation">Misinformation</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Additional Details (optional)</label>
+                            <textarea name="details" class="form-control" rows="3"
+                                      placeholder="Please provide any additional context..."></textarea>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="{{ thread.get_absolute_url }}" class="btn btn-secondary">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-flag"></i> Submit Report
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

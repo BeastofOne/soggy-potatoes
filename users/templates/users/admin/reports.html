@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Reports - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{% url 'users:admin_dashboard' %}" class="text-muted text-decoration-none">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+            <h1 class="mt-2"><i class="bi bi-flag"></i> Content Reports</h1>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link {% if status_filter == 'pending' %}active{% endif %}"
+               href="?status=pending">
+                Pending
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if status_filter == 'reviewed' %}active{% endif %}"
+               href="?status=reviewed">
+                Reviewed
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if status_filter == 'action_taken' %}active{% endif %}"
+               href="?status=action_taken">
+                Action Taken
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if status_filter == 'dismissed' %}active{% endif %}"
+               href="?status=dismissed">
+                Dismissed
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if status_filter == 'all' %}active{% endif %}"
+               href="?status=all">
+                All
+            </a>
+        </li>
+    </ul>
+
+    <!-- Reports List -->
+    {% if reports %}
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Type</th>
+                            <th>Content</th>
+                            <th>Reason</th>
+                            <th>Reporter</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in reports %}
+                        <tr>
+                            <td>
+                                {% if report.thread %}
+                                <span class="badge bg-info">Thread</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Post</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if report.thread %}
+                                <strong>{{ report.thread.title|truncatewords:5 }}</strong>
+                                <br><small class="text-muted">by {{ report.thread.author.username }}</small>
+                                {% else %}
+                                <strong>Post in: {{ report.post.thread.title|truncatewords:5 }}</strong>
+                                <br><small class="text-muted">by {{ report.post.author.username }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-warning text-dark">{{ report.get_reason_display }}</span>
+                            </td>
+                            <td>{{ report.reporter.username }}</td>
+                            <td>{{ report.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="badge
+                                    {% if report.status == 'pending' %}bg-danger
+                                    {% elif report.status == 'reviewed' %}bg-info
+                                    {% elif report.status == 'action_taken' %}bg-success
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ report.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if report.status == 'pending' %}
+                                <a href="{% url 'users:handle_report' report.pk %}" class="btn btn-sm btn-primary">
+                                    Review
+                                </a>
+                                {% else %}
+                                <a href="{% url 'users:handle_report' report.pk %}" class="btn btn-sm btn-outline-secondary">
+                                    View
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-check-circle fs-1 text-success"></i>
+            <p class="mt-2 text-muted">No reports to show.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

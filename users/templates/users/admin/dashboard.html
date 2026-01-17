@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Soggy Potatoes{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-speedometer2"></i> Admin Dashboard</h1>
+        <a href="{% url 'admin:index' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-gear"></i> Django Admin
+        </a>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Products</h6>
+                            <h2 class="mb-0">{{ product_count }}</h2>
+                        </div>
+                        <i class="bi bi-box-seam fs-1 opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'users:admin_products' %}" class="text-white text-decoration-none">
+                        Manage Products <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Orders</h6>
+                            <h2 class="mb-0">{{ order_count }}</h2>
+                            {% if pending_orders > 0 %}
+                            <small>{{ pending_orders }} pending</small>
+                            {% endif %}
+                        </div>
+                        <i class="bi bi-bag-check fs-1 opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'admin:shop_order_changelist' %}" class="text-white text-decoration-none">
+                        View Orders <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Users</h6>
+                            <h2 class="mb-0">{{ user_count }}</h2>
+                        </div>
+                        <i class="bi bi-people fs-1 opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'admin:auth_user_changelist' %}" class="text-white text-decoration-none">
+                        View Users <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card {% if pending_reports > 0 %}bg-danger{% else %}bg-secondary{% endif %} text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Reports</h6>
+                            <h2 class="mb-0">{{ pending_reports }}</h2>
+                            <small>pending</small>
+                        </div>
+                        <i class="bi bi-flag fs-1 opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'users:admin_reports' %}" class="text-white text-decoration-none">
+                        View Reports <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Quick Actions -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-lightning"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'users:admin_products' %}" class="btn btn-outline-primary text-start">
+                            <i class="bi bi-plus-circle"></i> Add New Product
+                        </a>
+                        <a href="{% url 'users:admin_badges' %}" class="btn btn-outline-warning text-start">
+                            <i class="bi bi-award"></i> Manage Badges
+                        </a>
+                        <a href="{% url 'users:admin_reports' %}" class="btn btn-outline-danger text-start">
+                            <i class="bi bi-flag"></i> Review Reports
+                            {% if pending_reports > 0 %}
+                            <span class="badge bg-danger float-end">{{ pending_reports }}</span>
+                            {% endif %}
+                        </a>
+                        <a href="{% url 'admin:shop_category_changelist' %}" class="btn btn-outline-secondary text-start">
+                            <i class="bi bi-folder"></i> Manage Categories
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Badges Overview -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-award"></i> Badges</h5>
+                    <a href="{% url 'users:admin_badges' %}" class="btn btn-sm btn-outline-primary">Manage</a>
+                </div>
+                <div class="card-body">
+                    {% if badges %}
+                    <div class="d-flex flex-wrap gap-3">
+                        {% for badge in badges %}
+                        <div class="text-center" style="width: 80px;">
+                            <img src="{{ badge.image.url }}" alt="{{ badge.name }}"
+                                 class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                            <small class="d-block text-truncate">{{ badge.name }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted mb-0">No badges created yet. <a href="{% url 'users:admin_badges' %}">Create one!</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Recent Products -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-box-seam"></i> Recent Products</h5>
+                    <a href="{% url 'users:admin_products' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    {% if products %}
+                    <ul class="list-group list-group-flush">
+                        {% for product in products %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                                     class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                {% endif %}
+                                <div>
+                                    <strong>{{ product.name }}</strong>
+                                    <br><small class="text-muted">${{ product.price }}</small>
+                                </div>
+                            </div>
+                            <span class="badge {% if product.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                                {% if product.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted p-3 mb-0">No products yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Reports -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-flag"></i> Pending Reports</h5>
+                    <a href="{% url 'users:admin_reports' %}" class="btn btn-sm btn-outline-danger">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    {% if recent_reports %}
+                    <ul class="list-group list-group-flush">
+                        {% for report in recent_reports %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <span class="badge bg-warning text-dark">{{ report.get_reason_display }}</span>
+                                    {% if report.thread %}
+                                    <strong>Thread:</strong> {{ report.thread.title|truncatewords:5 }}
+                                    {% else %}
+                                    <strong>Post</strong> in {{ report.post.thread.title|truncatewords:5 }}
+                                    {% endif %}
+                                </div>
+                                <a href="{% url 'users:handle_report' report.pk %}" class="btn btn-sm btn-outline-primary">
+                                    Review
+                                </a>
+                            </div>
+                            <small class="text-muted">Reported by {{ report.reporter.username }} - {{ report.created_at|timesince }} ago</small>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted p-3 mb-0">No pending reports.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Banned Users -->
+    {% if banned_users %}
+    <div class="card mb-4">
+        <div class="card-header bg-white">
+            <h5 class="mb-0"><i class="bi bi-person-x"></i> Banned Users</h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Reason</th>
+                        <th>Banned At</th>
+                        <th>Expires</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ban in banned_users %}
+                    <tr>
+                        <td>{{ ban.user.username }}</td>
+                        <td>{{ ban.reason|truncatewords:10 }}</td>
+                        <td>{{ ban.banned_at|date:"M d, Y" }}</td>
+                        <td>{% if ban.expires_at %}{{ ban.expires_at|date:"M d, Y" }}{% else %}Permanent{% endif %}</td>
+                        <td>
+                            <a href="{% url 'users:unban_user' ban.user.username %}" class="btn btn-sm btn-outline-success">
+                                <i class="bi bi-unlock"></i> Unban
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
