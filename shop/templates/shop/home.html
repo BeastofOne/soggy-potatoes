@@ -7,15 +7,33 @@
 {% block content %}
 <!-- Hero Section -->
 <section class="hero text-center">
-    <div class="container">
-        <h1 class="display-4 fw-bold mb-3">Welcome to Soggy Potatoes!</h1>
-        <p class="lead mb-4">Cute, quirky stickers made with love. Join our community of sticker enthusiasts!</p>
-        <div class="d-flex justify-content-center gap-3">
-            <a href="{% url 'shop:product_list' %}" class="btn btn-light btn-lg">
-                <i class="bi bi-grid"></i> Browse Stickers
+    <div class="container position-relative">
+        <!-- Decorative elements -->
+        <div class="hero-decoration" style="position: absolute; top: -20px; left: 5%; font-size: 2rem; opacity: 0.4; animation: float 5s ease-in-out infinite;">
+            &#x2728;
+        </div>
+        <div class="hero-decoration" style="position: absolute; top: 30%; right: 5%; font-size: 1.5rem; opacity: 0.3; animation: float 7s ease-in-out infinite;">
+            &#x1F433;
+        </div>
+        <div class="hero-decoration" style="position: absolute; bottom: 10%; left: 15%; font-size: 1.8rem; opacity: 0.35; animation: float 6s ease-in-out infinite; animation-delay: -3s;">
+            &#x1F431;
+        </div>
+        <div class="hero-decoration" style="position: absolute; bottom: 20%; right: 15%; font-size: 1.3rem; opacity: 0.3; animation: float 4s ease-in-out infinite; animation-delay: -1s;">
+            &#x2B50;
+        </div>
+
+        <h1 class="display-4 fw-bold mb-3">
+            Welcome to Soggy Potatoes! &#x1F338;
+        </h1>
+        <p class="lead mb-4">
+            Cute, quirky stickers made with love &#x1F49C; Join our community of sticker enthusiasts!
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'shop:product_list' %}" class="btn btn-light btn-lg px-4">
+                <i class="bi bi-stars"></i> Browse Stickers
             </a>
-            <a href="{% url 'forum:home' %}" class="btn btn-outline-light btn-lg">
-                <i class="bi bi-chat-dots"></i> Join Forum
+            <a href="{% url 'forum:home' %}" class="btn btn-outline-light btn-lg px-4">
+                <i class="bi bi-chat-heart"></i> Join Forum
             </a>
         </div>
     </div>
@@ -25,8 +43,8 @@
 <section class="py-5">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="fw-bold">Featured Stickers</h2>
-            <p class="text-muted">Check out our most popular designs</p>
+            <h2 class="fw-bold section-title">Featured Stickers &#x2728;</h2>
+            <p class="text-muted mt-3">Check out our most popular designs</p>
         </div>
 
         <div class="row g-4">
@@ -88,24 +106,30 @@
     <div class="container">
         <div class="row g-4 text-center">
             <div class="col-md-4">
-                <div class="p-4">
-                    <i class="bi bi-heart-fill text-danger fs-1 mb-3"></i>
-                    <h5>Made with Love</h5>
-                    <p class="text-muted">Each sticker is designed with care and attention to detail.</p>
+                <div class="card h-100 border-0" style="background: transparent;">
+                    <div class="card-body p-4">
+                        <div class="mb-3" style="font-size: 3rem;">&#x1F49C;</div>
+                        <h5 class="fw-bold">Made with Love</h5>
+                        <p class="text-muted">Each sticker is designed with care and attention to detail by Joana!</p>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="p-4">
-                    <i class="bi bi-truck text-primary fs-1 mb-3"></i>
-                    <h5>Fast Shipping</h5>
-                    <p class="text-muted">Orders ship within 1-2 business days.</p>
+                <div class="card h-100 border-0" style="background: transparent;">
+                    <div class="card-body p-4">
+                        <div class="mb-3" style="font-size: 3rem;">&#x1F40B;</div>
+                        <h5 class="fw-bold">Fast Shipping</h5>
+                        <p class="text-muted">Orders ship within 1-2 business days, swimming to you quickly!</p>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="p-4">
-                    <i class="bi bi-people-fill text-success fs-1 mb-3"></i>
-                    <h5>Community</h5>
-                    <p class="text-muted">Join our forum to connect with fellow sticker lovers!</p>
+                <div class="card h-100 border-0" style="background: transparent;">
+                    <div class="card-body p-4">
+                        <div class="mb-3" style="font-size: 3rem;">&#x1F431;</div>
+                        <h5 class="fw-bold">Community</h5>
+                        <p class="text-muted">Join our forum to connect with fellow sticker lovers and cat fans!</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -116,13 +140,20 @@
 <section class="py-5">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-6 text-center">
-                <h3 class="fw-bold mb-3">Stay Updated!</h3>
-                <p class="text-muted mb-4">Subscribe to get notified about new sticker drops and exclusive deals.</p>
-                <form class="d-flex gap-2">
-                    <input type="email" class="form-control" placeholder="Enter your email">
-                    <button type="submit" class="btn btn-primary">Subscribe</button>
-                </form>
+            <div class="col-md-8 col-lg-6">
+                <div class="card border-0 shadow-sm p-4">
+                    <div class="text-center">
+                        <div class="mb-3" style="font-size: 2.5rem;">&#x1F48C;</div>
+                        <h3 class="fw-bold mb-3">Stay Updated! &#x2728;</h3>
+                        <p class="text-muted mb-4">Subscribe to get notified about new sticker drops and exclusive deals.</p>
+                        <form class="d-flex gap-2 flex-wrap justify-content-center">
+                            <input type="email" class="form-control" style="max-width: 300px;" placeholder="Enter your email">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-envelope-heart"></i> Subscribe
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -1,20 +1,41 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <defs>
     <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#b794f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f9a8d4;stop-opacity:1" />
     </linearGradient>
   </defs>
-  <!-- Water droplet shape -->
-  <path d="M50 10 C50 10 20 50 20 65 C20 82 33 95 50 95 C67 95 80 82 80 65 C80 50 50 10 50 10 Z" fill="url(#grad)"/>
-  <!-- Cute face - eyes -->
-  <circle cx="38" cy="60" r="5" fill="white"/>
-  <circle cx="62" cy="60" r="5" fill="white"/>
-  <circle cx="39" cy="61" r="2.5" fill="#333"/>
-  <circle cx="63" cy="61" r="2.5" fill="#333"/>
-  <!-- Cute face - smile -->
-  <path d="M40 72 Q50 82 60 72" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="url(#grad)"/>
+
+  <!-- Cute whale body -->
+  <ellipse cx="52" cy="55" rx="30" ry="22" fill="#e9d5ff"/>
+
+  <!-- Whale tail -->
+  <path d="M22 55 Q12 42, 18 30 Q26 40, 22 55" fill="#e9d5ff"/>
+  <path d="M22 55 Q12 68, 18 80 Q26 70, 22 55" fill="#e9d5ff"/>
+
+  <!-- Whale belly stripe -->
+  <ellipse cx="58" cy="63" rx="20" ry="10" fill="#faf5ff"/>
+
+  <!-- Whale eye -->
+  <circle cx="68" cy="50" r="6" fill="white"/>
+  <circle cx="70" cy="49" r="3" fill="#4a3a5c"/>
+  <circle cx="71" cy="47" r="1" fill="white"/>
+
+  <!-- Whale smile -->
+  <path d="M62 62 Q68 68 74 62" stroke="#9f7aea" stroke-width="2" fill="none" stroke-linecap="round"/>
+
   <!-- Blush -->
-  <ellipse cx="32" cy="68" rx="5" ry="3" fill="rgba(255,182,193,0.6)"/>
-  <ellipse cx="68" cy="68" rx="5" ry="3" fill="rgba(255,182,193,0.6)"/>
+  <ellipse cx="75" cy="58" rx="4" ry="2.5" fill="rgba(249,168,212,0.5)"/>
+
+  <!-- Water spout -->
+  <circle cx="42" cy="30" r="4" fill="#93c5fd" opacity="0.8"/>
+  <circle cx="48" cy="22" r="3" fill="#93c5fd" opacity="0.7"/>
+  <circle cx="38" cy="24" r="2.5" fill="#93c5fd" opacity="0.6"/>
+
+  <!-- Sparkles -->
+  <circle cx="85" cy="20" r="2" fill="white" opacity="0.8"/>
+  <circle cx="15" cy="25" r="1.5" fill="white" opacity="0.7"/>
+  <circle cx="80" cy="80" r="1.5" fill="white" opacity="0.6"/>
 </svg>
