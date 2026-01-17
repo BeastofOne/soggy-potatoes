@@ -84,6 +84,7 @@
                                         data-product-price="{{ product.price }}"
                                         data-product-sale-price="{{ product.sale_price|default:'' }}"
                                         data-product-stock="{{ product.stock }}"
+                                        data-product-track-inventory="{{ product.track_inventory|yesno:'true,false' }}"
                                         data-product-category="{{ product.category.pk|default:'' }}"
                                         data-product-active="{{ product.is_active|yesno:'true,false' }}"
                                         data-product-featured="{{ product.is_featured|yesno:'true,false' }}">
@@ -152,8 +153,18 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label">Stock</label>
-                                        <input type="number" name="stock" class="form-control" min="0" value="0">
+                                        <input type="number" name="stock" class="form-control" min="0" value="0" id="addStock">
+                                        <small class="text-muted">Only matters if tracking inventory</small>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" name="track_inventory" class="form-check-input" id="addTrackInventory">
+                                    <label class="form-check-label" for="addTrackInventory">
+                                        Track inventory
+                                        <small class="text-muted d-block">If OFF, product is always shown as "In Stock"</small>
+                                    </label>
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -248,6 +259,15 @@
                                 </div>
                             </div>
                             <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" name="track_inventory" class="form-check-input" id="editTrackInventory">
+                                    <label class="form-check-label" for="editTrackInventory">
+                                        Track inventory
+                                        <small class="text-muted d-block">If OFF, product is always shown as "In Stock"</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
                                 <label class="form-label">Category</label>
                                 <select name="category" id="editProductCategory" class="form-select">
                                     <option value="">-- No Category --</option>
@@ -328,6 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('editProductPrice').value = this.dataset.productPrice;
             document.getElementById('editProductSalePrice').value = this.dataset.productSalePrice;
             document.getElementById('editProductStock').value = this.dataset.productStock;
+            document.getElementById('editTrackInventory').checked = this.dataset.productTrackInventory === 'true';
             document.getElementById('editProductCategory').value = this.dataset.productCategory;
             document.getElementById('editIsActive').checked = this.dataset.productActive === 'true';
             document.getElementById('editIsFeatured').checked = this.dataset.productFeatured === 'true';

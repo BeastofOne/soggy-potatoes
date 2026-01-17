@@ -178,6 +178,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/')
     additional_images = models.JSONField(default=list, blank=True)  # Store additional image paths
     stock = models.PositiveIntegerField(default=0)
+    track_inventory = models.BooleanField(default=False, help_text="If disabled, product is always shown as in stock")
     is_active = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -211,7 +212,13 @@ class Product(models.Model):
 
     @property
     def in_stock(self):
-        """Check if product is in stock."""
+        """Check if product is in stock.
+
+        If track_inventory is False (default), product is always in stock.
+        If track_inventory is True, checks actual stock count.
+        """
+        if not self.track_inventory:
+            return True  # Always available unless inventory tracking is enabled
         return self.stock > 0
 
     @property

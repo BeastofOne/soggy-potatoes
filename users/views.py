@@ -206,6 +206,7 @@ def admin_products(request):
             description = request.POST.get('description', '')
             price = request.POST.get('price')
             stock = request.POST.get('stock', 0)
+            track_inventory = request.POST.get('track_inventory') == 'on'
             category_id = request.POST.get('category')
             is_active = request.POST.get('is_active') == 'on'
             is_featured = request.POST.get('is_featured') == 'on'
@@ -215,6 +216,7 @@ def admin_products(request):
                 description=description,
                 price=price,
                 stock=int(stock) if stock else 0,
+                track_inventory=track_inventory,
                 is_active=is_active,
                 is_featured=is_featured
             )
@@ -232,6 +234,7 @@ def admin_products(request):
             product.description = request.POST.get('description', product.description)
             product.price = request.POST.get('price', product.price)
             product.stock = int(request.POST.get('stock', product.stock) or 0)
+            product.track_inventory = request.POST.get('track_inventory') == 'on'
             product.is_active = request.POST.get('is_active') == 'on'
             product.is_featured = request.POST.get('is_featured') == 'on'
 
