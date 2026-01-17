@@ -28,6 +28,10 @@ django-debug-toolbar>=4.0  # Debug toolbar (dev only)
 # Payments
 stripe>=14.0  # Stripe payment processing
 
+# Cloud Storage (for persistent media files on Render)
+cloudinary>=1.36
+django-cloudinary-storage>=0.3
+
 # Future additions (commented out until needed):
 # django-storages>=1.14  # AWS S3 storage (future)
 # boto3>=1.34  # AWS SDK (future)

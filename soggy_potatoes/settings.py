@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'corsheaders',
+    'cloudinary_storage',  # Must be before django.contrib.staticfiles for media
+    'cloudinary',
 
     # Local apps
     'shop.apps.ShopConfig',
@@ -155,8 +157,21 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # For collectstatic in production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (user uploads)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# In production, use Cloudinary for persistent storage
+# In development, use local filesystem
+if os.getenv('CLOUDINARY_URL'):
+    # Cloudinary is configured - use it for media storage
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    MEDIA_URL = '/media/'  # This will be overridden by Cloudinary URLs
+
+    # Cloudinary configuration (parsed from CLOUDINARY_URL env var)
+    import cloudinary
+    # CLOUDINARY_URL format: cloudinary://API_KEY:API_SECRET@CLOUD_NAME
+    cloudinary.config(secure=True)
+else:
+    # Local development - use filesystem
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Default primary key field type

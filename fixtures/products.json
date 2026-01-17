@@ -1,0 +1,2021 @@
+[
+{
+  "model": "shop.category",
+  "pk": 1,
+  "fields": {
+    "name": "Character Sheets",
+    "slug": "character-sheets",
+    "description": "Detailed character reference sheets",
+    "image": "",
+    "is_active": true,
+    "created_at": "2026-01-16T20:43:04.474Z",
+    "updated_at": "2026-01-16T20:43:04.474Z"
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 2,
+  "fields": {
+    "name": "Duo Stickers",
+    "slug": "duo-stickers",
+    "description": "Stickers featuring two characters together",
+    "image": "",
+    "is_active": true,
+    "created_at": "2026-01-16T20:43:04.478Z",
+    "updated_at": "2026-01-16T20:43:04.478Z"
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 3,
+  "fields": {
+    "name": "Single Character",
+    "slug": "single-character",
+    "description": "Individual character stickers",
+    "image": "",
+    "is_active": true,
+    "created_at": "2026-01-16T20:43:04.482Z",
+    "updated_at": "2026-01-16T20:43:04.482Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 1,
+  "fields": {
+    "category": 3,
+    "name": "Squirrelflight",
+    "slug": "squirrelflight",
+    "description": "Adorable Squirrelflight sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/squirrelflight.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": true,
+    "created_at": "2026-01-16T20:43:04.494Z",
+    "updated_at": "2026-01-16T20:43:04.494Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 2,
+  "fields": {
+    "category": 3,
+    "name": "Sasha",
+    "slug": "sasha",
+    "description": "Adorable Sasha sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/sasha.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": true,
+    "created_at": "2026-01-16T20:43:06.035Z",
+    "updated_at": "2026-01-16T20:43:06.035Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 3,
+  "fields": {
+    "category": 3,
+    "name": "Daisy",
+    "slug": "daisy",
+    "description": "Adorable Daisy sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/daisy.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": true,
+    "created_at": "2026-01-16T20:43:06.048Z",
+    "updated_at": "2026-01-16T20:43:06.048Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 4,
+  "fields": {
+    "category": 3,
+    "name": "Smallear",
+    "slug": "smallear",
+    "description": "Adorable Smallear sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/smallear.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": true,
+    "created_at": "2026-01-16T20:43:06.918Z",
+    "updated_at": "2026-01-16T20:43:06.918Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 5,
+  "fields": {
+    "category": 1,
+    "name": "Bristlefrost character sheet",
+    "slug": "bristlefrost-character-sheet",
+    "description": "Adorable Bristlefrost character sheet sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "5.99",
+    "sale_price": null,
+    "image": "products/bristlefrost-character-sheet.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": true,
+    "created_at": "2026-01-16T20:43:06.931Z",
+    "updated_at": "2026-01-16T20:43:06.931Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 6,
+  "fields": {
+    "category": 3,
+    "name": "Spiderleg",
+    "slug": "spiderleg",
+    "description": "Adorable Spiderleg sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/spiderleg.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": true,
+    "created_at": "2026-01-16T20:43:06.946Z",
+    "updated_at": "2026-01-16T20:43:06.946Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 7,
+  "fields": {
+    "category": 3,
+    "name": "Yellowfang",
+    "slug": "yellowfang",
+    "description": "Adorable Yellowfang sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/yellowfang.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:08.576Z",
+    "updated_at": "2026-01-16T20:43:08.576Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 8,
+  "fields": {
+    "category": 3,
+    "name": "Kestrelflight",
+    "slug": "kestrelflight",
+    "description": "Adorable Kestrelflight sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/kestrelflight.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:08.585Z",
+    "updated_at": "2026-01-16T20:43:08.585Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 9,
+  "fields": {
+    "category": 3,
+    "name": "Heathertail",
+    "slug": "heathertail",
+    "description": "Adorable Heathertail sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/heathertail.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:09.320Z",
+    "updated_at": "2026-01-16T20:43:09.320Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 10,
+  "fields": {
+    "category": 3,
+    "name": "Whitestorm",
+    "slug": "whitestorm",
+    "description": "Adorable Whitestorm sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/whitestorm.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:10.038Z",
+    "updated_at": "2026-01-16T20:43:10.038Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 11,
+  "fields": {
+    "category": 1,
+    "name": "Silverstream character sheet",
+    "slug": "silverstream-character-sheet",
+    "description": "Adorable Silverstream character sheet sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "5.99",
+    "sale_price": null,
+    "image": "products/silverstream-character-sheet.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:10.051Z",
+    "updated_at": "2026-01-16T20:43:10.051Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 12,
+  "fields": {
+    "category": 3,
+    "name": "Waterlily",
+    "slug": "waterlily",
+    "description": "Adorable Waterlily sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/waterlily.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:10.073Z",
+    "updated_at": "2026-01-16T20:43:10.073Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 13,
+  "fields": {
+    "category": 3,
+    "name": "Speckletail",
+    "slug": "speckletail",
+    "description": "Adorable Speckletail sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/speckletail.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:10.089Z",
+    "updated_at": "2026-01-16T20:43:10.089Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 14,
+  "fields": {
+    "category": 1,
+    "name": "Brambleclaw character sheet",
+    "slug": "brambleclaw-character-sheet",
+    "description": "Adorable Brambleclaw character sheet sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "5.99",
+    "sale_price": null,
+    "image": "products/brambleclaw-character-sheet.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:10.115Z",
+    "updated_at": "2026-01-16T20:43:10.115Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 15,
+  "fields": {
+    "category": 3,
+    "name": "Sol",
+    "slug": "sol",
+    "description": "Adorable Sol sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/sol.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:10.126Z",
+    "updated_at": "2026-01-16T20:43:10.126Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 16,
+  "fields": {
+    "category": 3,
+    "name": "Redtail",
+    "slug": "redtail",
+    "description": "Adorable Redtail sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/redtail.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:10.138Z",
+    "updated_at": "2026-01-16T20:43:10.138Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 17,
+  "fields": {
+    "category": 3,
+    "name": "Needletail",
+    "slug": "needletail",
+    "description": "Adorable Needletail sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/needletail.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:10.981Z",
+    "updated_at": "2026-01-16T20:43:10.981Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 18,
+  "fields": {
+    "category": 3,
+    "name": "Dovewing",
+    "slug": "dovewing",
+    "description": "Adorable Dovewing sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/dovewing.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:10.992Z",
+    "updated_at": "2026-01-16T20:43:10.992Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 19,
+  "fields": {
+    "category": 3,
+    "name": "Firestar",
+    "slug": "firestar",
+    "description": "Adorable Firestar sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/firestar.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:11.015Z",
+    "updated_at": "2026-01-16T20:43:11.015Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 20,
+  "fields": {
+    "category": 1,
+    "name": "Moonlight character sheet",
+    "slug": "moonlight-character-sheet",
+    "description": "Adorable Moonlight character sheet sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "5.99",
+    "sale_price": null,
+    "image": "products/moonlight-character-sheet.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:11.025Z",
+    "updated_at": "2026-01-16T20:43:11.026Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 21,
+  "fields": {
+    "category": 3,
+    "name": "Crookedstar",
+    "slug": "crookedstar",
+    "description": "Adorable Crookedstar sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/crookedstar.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:11.040Z",
+    "updated_at": "2026-01-16T20:43:11.040Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 22,
+  "fields": {
+    "category": 3,
+    "name": "Spider Paw",
+    "slug": "spider-paw",
+    "description": "Adorable Spider Paw sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/spider-paw.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:11.076Z",
+    "updated_at": "2026-01-16T20:43:11.076Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 23,
+  "fields": {
+    "category": 3,
+    "name": "Ashfur",
+    "slug": "ashfur",
+    "description": "Adorable Ashfur sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/ashfur.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:12.075Z",
+    "updated_at": "2026-01-16T20:43:12.075Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 24,
+  "fields": {
+    "category": 3,
+    "name": "Halftail",
+    "slug": "halftail",
+    "description": "Adorable Halftail sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/halftail.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:12.086Z",
+    "updated_at": "2026-01-16T20:43:12.086Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 25,
+  "fields": {
+    "category": 3,
+    "name": "Deadfoot",
+    "slug": "deadfoot",
+    "description": "Adorable Deadfoot sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/deadfoot.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:13.726Z",
+    "updated_at": "2026-01-16T20:43:13.726Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 26,
+  "fields": {
+    "category": 1,
+    "name": "Wioletshine character sheet",
+    "slug": "wioletshine-character-sheet",
+    "description": "Adorable Wioletshine character sheet sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "5.99",
+    "sale_price": null,
+    "image": "products/wioletshine-character-sheet.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:13.739Z",
+    "updated_at": "2026-01-16T20:43:13.739Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 27,
+  "fields": {
+    "category": 3,
+    "name": "Turtle Tail",
+    "slug": "turtle-tail",
+    "description": "Adorable Turtle Tail sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/turtle-tail.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:13.775Z",
+    "updated_at": "2026-01-16T20:43:13.775Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 28,
+  "fields": {
+    "category": 3,
+    "name": "Bluestar",
+    "slug": "bluestar",
+    "description": "Adorable Bluestar sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/bluestar.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:13.783Z",
+    "updated_at": "2026-01-16T20:43:13.783Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 29,
+  "fields": {
+    "category": 3,
+    "name": "Scourge",
+    "slug": "scourge",
+    "description": "Adorable Scourge sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/scourge.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:14.492Z",
+    "updated_at": "2026-01-16T20:43:14.492Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 30,
+  "fields": {
+    "category": 3,
+    "name": "Crowfeather",
+    "slug": "crowfeather",
+    "description": "Adorable Crowfeather sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/crowfeather.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:15.388Z",
+    "updated_at": "2026-01-16T20:43:15.388Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 31,
+  "fields": {
+    "category": 3,
+    "name": "Wetfoot",
+    "slug": "wetfoot",
+    "description": "Adorable Wetfoot sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/wetfoot.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:15.398Z",
+    "updated_at": "2026-01-16T20:43:15.398Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 32,
+  "fields": {
+    "category": 3,
+    "name": "Hollyleaf",
+    "slug": "hollyleaf",
+    "description": "Adorable Hollyleaf sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/hollyleaf.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:16.580Z",
+    "updated_at": "2026-01-16T20:43:16.580Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 33,
+  "fields": {
+    "category": 3,
+    "name": "Silverstream",
+    "slug": "silverstream",
+    "description": "Adorable Silverstream sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/silverstream.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:17.245Z",
+    "updated_at": "2026-01-16T20:43:17.245Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 34,
+  "fields": {
+    "category": 3,
+    "name": "Tallstar",
+    "slug": "tallstar",
+    "description": "Adorable Tallstar sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/tallstar.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:19.089Z",
+    "updated_at": "2026-01-16T20:43:19.089Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 35,
+  "fields": {
+    "category": 3,
+    "name": "Sorreltail",
+    "slug": "sorreltail",
+    "description": "Adorable Sorreltail sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/sorreltail.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:20.180Z",
+    "updated_at": "2026-01-16T20:43:20.180Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 36,
+  "fields": {
+    "category": 3,
+    "name": "Runningwind",
+    "slug": "runningwind",
+    "description": "Adorable Runningwind sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/runningwind.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:20.191Z",
+    "updated_at": "2026-01-16T20:43:20.191Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 37,
+  "fields": {
+    "category": 1,
+    "name": "Alderheart character sheet",
+    "slug": "alderheart-character-sheet",
+    "description": "Adorable Alderheart character sheet sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "5.99",
+    "sale_price": null,
+    "image": "products/alderheart-character-sheet.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:20.226Z",
+    "updated_at": "2026-01-16T20:43:20.226Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 38,
+  "fields": {
+    "category": 3,
+    "name": "Ivypool",
+    "slug": "ivypool",
+    "description": "Adorable Ivypool sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/ivypool.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:20.240Z",
+    "updated_at": "2026-01-16T20:43:20.240Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 39,
+  "fields": {
+    "category": 3,
+    "name": "Patchpelt",
+    "slug": "patchpelt",
+    "description": "Adorable Patchpelt sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/patchpelt.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:20.275Z",
+    "updated_at": "2026-01-16T20:43:20.275Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 40,
+  "fields": {
+    "category": 3,
+    "name": "Dappletail",
+    "slug": "dappletail",
+    "description": "Adorable Dappletail sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/dappletail.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:20.286Z",
+    "updated_at": "2026-01-16T20:43:20.286Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 41,
+  "fields": {
+    "category": 3,
+    "name": "Brambleclaw",
+    "slug": "brambleclaw",
+    "description": "Adorable Brambleclaw sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/brambleclaw.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:20.294Z",
+    "updated_at": "2026-01-16T20:43:20.294Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 42,
+  "fields": {
+    "category": 1,
+    "name": "Brightheart character sheet",
+    "slug": "brightheart-character-sheet",
+    "description": "Adorable Brightheart character sheet sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "5.99",
+    "sale_price": null,
+    "image": "products/brightheart-character-sheet.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:20.323Z",
+    "updated_at": "2026-01-16T20:43:20.323Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 43,
+  "fields": {
+    "category": 3,
+    "name": "Crookedjaw",
+    "slug": "crookedjaw",
+    "description": "Adorable Crookedjaw sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/crookedjaw.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:20.338Z",
+    "updated_at": "2026-01-16T20:43:20.338Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 44,
+  "fields": {
+    "category": 3,
+    "name": "Tom",
+    "slug": "tom",
+    "description": "Adorable Tom sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/tom.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:20.351Z",
+    "updated_at": "2026-01-16T20:43:20.352Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 45,
+  "fields": {
+    "category": 3,
+    "name": "Cinderpelt",
+    "slug": "cinderpelt",
+    "description": "Adorable Cinderpelt sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/cinderpelt.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:21.183Z",
+    "updated_at": "2026-01-16T20:43:21.183Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 46,
+  "fields": {
+    "category": 3,
+    "name": "Feathertail",
+    "slug": "feathertail",
+    "description": "Adorable Feathertail sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/feathertail.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:21.194Z",
+    "updated_at": "2026-01-16T20:43:21.194Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 47,
+  "fields": {
+    "category": 3,
+    "name": "Alderheart",
+    "slug": "alderheart",
+    "description": "Adorable Alderheart sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/alderheart.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:21.228Z",
+    "updated_at": "2026-01-16T20:43:21.228Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 48,
+  "fields": {
+    "category": 3,
+    "name": "Rock",
+    "slug": "rock",
+    "description": "Adorable Rock sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/rock.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:21.241Z",
+    "updated_at": "2026-01-16T20:43:21.241Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 49,
+  "fields": {
+    "category": 2,
+    "name": "Graywing and Slate",
+    "slug": "graywing-and-slate",
+    "description": "Adorable Graywing and Slate sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "4.99",
+    "sale_price": null,
+    "image": "products/graywing-and-slate.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:22.076Z",
+    "updated_at": "2026-01-16T20:43:22.076Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 50,
+  "fields": {
+    "category": 3,
+    "name": "Beetlenose",
+    "slug": "beetlenose",
+    "description": "Adorable Beetlenose sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/beetlenose.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:22.087Z",
+    "updated_at": "2026-01-16T20:43:22.087Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 51,
+  "fields": {
+    "category": 2,
+    "name": "Leafpool and Squirrelflight",
+    "slug": "leafpool-and-squirrelflight",
+    "description": "Adorable Leafpool and Squirrelflight sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "4.99",
+    "sale_price": null,
+    "image": "products/leafpool-and-squirrelflight.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:22.099Z",
+    "updated_at": "2026-01-16T20:43:22.099Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 52,
+  "fields": {
+    "category": 3,
+    "name": "Mousefur",
+    "slug": "mousefur",
+    "description": "Adorable Mousefur sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/mousefur.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:22.128Z",
+    "updated_at": "2026-01-16T20:43:22.128Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 53,
+  "fields": {
+    "category": 3,
+    "name": "Willowshine",
+    "slug": "willowshine",
+    "description": "Adorable Willowshine sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/willowshine.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:22.140Z",
+    "updated_at": "2026-01-16T20:43:22.140Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 54,
+  "fields": {
+    "category": 3,
+    "name": "Darkstripe",
+    "slug": "darkstripe",
+    "description": "Adorable Darkstripe sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/darkstripe.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:22.930Z",
+    "updated_at": "2026-01-16T20:43:22.930Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 55,
+  "fields": {
+    "category": 3,
+    "name": "One eye",
+    "slug": "one-eye",
+    "description": "Adorable One eye sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/one-eye.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:23.744Z",
+    "updated_at": "2026-01-16T20:43:23.744Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 56,
+  "fields": {
+    "category": 3,
+    "name": "Oakheart",
+    "slug": "oakheart",
+    "description": "Adorable Oakheart sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/oakheart.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:25.427Z",
+    "updated_at": "2026-01-16T20:43:25.427Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 57,
+  "fields": {
+    "category": 3,
+    "name": "Barkface",
+    "slug": "barkface",
+    "description": "Adorable Barkface sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/barkface.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:26.243Z",
+    "updated_at": "2026-01-16T20:43:26.243Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 58,
+  "fields": {
+    "category": 3,
+    "name": "Spottedleaf",
+    "slug": "spottedleaf",
+    "description": "Adorable Spottedleaf sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/spottedleaf.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:27.079Z",
+    "updated_at": "2026-01-16T20:43:27.079Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 59,
+  "fields": {
+    "category": 3,
+    "name": "Willowpelt",
+    "slug": "willowpelt",
+    "description": "Adorable Willowpelt sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/willowpelt.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:28.339Z",
+    "updated_at": "2026-01-16T20:43:28.339Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 60,
+  "fields": {
+    "category": 3,
+    "name": "Leopardstar",
+    "slug": "leopardstar",
+    "description": "Adorable Leopardstar sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/leopardstar.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:28.379Z",
+    "updated_at": "2026-01-16T20:43:28.379Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 61,
+  "fields": {
+    "category": 3,
+    "name": "Ferncloud",
+    "slug": "ferncloud",
+    "description": "Adorable Ferncloud sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/ferncloud.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:29.338Z",
+    "updated_at": "2026-01-16T20:43:29.338Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 62,
+  "fields": {
+    "category": 3,
+    "name": "Lionheart",
+    "slug": "lionheart",
+    "description": "Adorable Lionheart sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/lionheart.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:29.351Z",
+    "updated_at": "2026-01-16T20:43:29.351Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 63,
+  "fields": {
+    "category": 3,
+    "name": "Brackenfur",
+    "slug": "brackenfur",
+    "description": "Adorable Brackenfur sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/brackenfur.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:29.374Z",
+    "updated_at": "2026-01-16T20:43:29.374Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 64,
+  "fields": {
+    "category": 3,
+    "name": "Sandstorm",
+    "slug": "sandstorm",
+    "description": "Adorable Sandstorm sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/sandstorm.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:29.386Z",
+    "updated_at": "2026-01-16T20:43:29.386Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 65,
+  "fields": {
+    "category": 3,
+    "name": "Tigerstar",
+    "slug": "tigerstar",
+    "description": "Adorable Tigerstar sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/tigerstar.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:30.278Z",
+    "updated_at": "2026-01-16T20:43:30.278Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 66,
+  "fields": {
+    "category": 3,
+    "name": "Twigbranch chatacter sheet",
+    "slug": "twigbranch-chatacter-sheet",
+    "description": "Adorable Twigbranch chatacter sheet sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/twigbranch-chatacter-sheet.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:30.291Z",
+    "updated_at": "2026-01-16T20:43:30.291Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 67,
+  "fields": {
+    "category": 3,
+    "name": "Jayfeather",
+    "slug": "jayfeather",
+    "description": "Adorable Jayfeather sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/jayfeather.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:30.328Z",
+    "updated_at": "2026-01-16T20:43:30.328Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 68,
+  "fields": {
+    "category": 3,
+    "name": "Pinestar",
+    "slug": "pinestar",
+    "description": "Adorable Pinestar sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/pinestar.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:30.342Z",
+    "updated_at": "2026-01-16T20:43:30.342Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 69,
+  "fields": {
+    "category": 1,
+    "name": "Ravnepaw character sheet",
+    "slug": "ravnepaw-character-sheet",
+    "description": "Adorable Ravnepaw character sheet sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "5.99",
+    "sale_price": null,
+    "image": "products/ravnepaw-character-sheet.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:30.374Z",
+    "updated_at": "2026-01-16T20:43:30.374Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 70,
+  "fields": {
+    "category": 3,
+    "name": "Brindleface",
+    "slug": "brindleface",
+    "description": "Adorable Brindleface sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/brindleface.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:31.224Z",
+    "updated_at": "2026-01-16T20:43:31.224Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 71,
+  "fields": {
+    "category": 3,
+    "name": "Ravenpaw",
+    "slug": "ravenpaw",
+    "description": "Adorable Ravenpaw sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/ravenpaw.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:32.285Z",
+    "updated_at": "2026-01-16T20:43:32.285Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 72,
+  "fields": {
+    "category": 3,
+    "name": "Brokenstar",
+    "slug": "brokenstar",
+    "description": "Adorable Brokenstar sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/brokenstar.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:33.279Z",
+    "updated_at": "2026-01-16T20:43:33.279Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 73,
+  "fields": {
+    "category": 3,
+    "name": "Smudge",
+    "slug": "smudge",
+    "description": "Adorable Smudge sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/smudge.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:33.289Z",
+    "updated_at": "2026-01-16T20:43:33.289Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 74,
+  "fields": {
+    "category": 3,
+    "name": "Barley",
+    "slug": "barley",
+    "description": "Adorable Barley sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/barley.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:34.540Z",
+    "updated_at": "2026-01-16T20:43:34.540Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 75,
+  "fields": {
+    "category": 3,
+    "name": "Clawface",
+    "slug": "clawface",
+    "description": "Adorable Clawface sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/clawface.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:34.573Z",
+    "updated_at": "2026-01-16T20:43:34.573Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 76,
+  "fields": {
+    "category": 3,
+    "name": "Swiftpaw",
+    "slug": "swiftpaw",
+    "description": "Adorable Swiftpaw sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/swiftpaw.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:35.288Z",
+    "updated_at": "2026-01-16T20:43:35.288Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 77,
+  "fields": {
+    "category": 2,
+    "name": "Jake and Tallstar",
+    "slug": "jake-and-tallstar",
+    "description": "Adorable Jake and Tallstar sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "4.99",
+    "sale_price": null,
+    "image": "products/jake-and-tallstar.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:35.326Z",
+    "updated_at": "2026-01-16T20:43:35.326Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 78,
+  "fields": {
+    "category": 3,
+    "name": "Berrynose",
+    "slug": "berrynose",
+    "description": "Adorable Berrynose sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/berrynose.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:35.336Z",
+    "updated_at": "2026-01-16T20:43:35.336Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 79,
+  "fields": {
+    "category": 3,
+    "name": "Tree",
+    "slug": "tree",
+    "description": "Adorable Tree sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/tree.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:35.348Z",
+    "updated_at": "2026-01-16T20:43:35.348Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 80,
+  "fields": {
+    "category": 3,
+    "name": "Briarlight",
+    "slug": "briarlight",
+    "description": "Adorable Briarlight sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/briarlight.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:36.323Z",
+    "updated_at": "2026-01-16T20:43:36.323Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 81,
+  "fields": {
+    "category": 3,
+    "name": "Tawnypelt",
+    "slug": "tawnypelt",
+    "description": "Adorable Tawnypelt sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/tawnypelt.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:36.333Z",
+    "updated_at": "2026-01-16T20:43:36.333Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 82,
+  "fields": {
+    "category": 3,
+    "name": "Leafpool",
+    "slug": "leafpool",
+    "description": "Adorable Leafpool sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/leafpool.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:36.346Z",
+    "updated_at": "2026-01-16T20:43:36.346Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 83,
+  "fields": {
+    "category": 2,
+    "name": "Cinderpelt and Lionblaze",
+    "slug": "cinderpelt-and-lionblaze",
+    "description": "Adorable Cinderpelt and Lionblaze sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "4.99",
+    "sale_price": null,
+    "image": "products/cinderpelt-and-lionblaze.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:36.379Z",
+    "updated_at": "2026-01-16T20:43:36.379Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 84,
+  "fields": {
+    "category": 3,
+    "name": "Curlfeather",
+    "slug": "curlfeather",
+    "description": "Adorable Curlfeather sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/curlfeather.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:36.392Z",
+    "updated_at": "2026-01-16T20:43:36.392Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 85,
+  "fields": {
+    "category": 3,
+    "name": "Mothwing",
+    "slug": "mothwing",
+    "description": "Adorable Mothwing sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/mothwing.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:36.429Z",
+    "updated_at": "2026-01-16T20:43:36.429Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 86,
+  "fields": {
+    "category": 1,
+    "name": "Cloudtail character sheet",
+    "slug": "cloudtail-character-sheet",
+    "description": "Adorable Cloudtail character sheet sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "5.99",
+    "sale_price": null,
+    "image": "products/cloudtail-character-sheet.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:36.442Z",
+    "updated_at": "2026-01-16T20:43:36.442Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 87,
+  "fields": {
+    "category": 1,
+    "name": "Waterlily character sheet",
+    "slug": "waterlily-character-sheet",
+    "description": "Adorable Waterlily character sheet sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "5.99",
+    "sale_price": null,
+    "image": "products/waterlily-character-sheet.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:36.484Z",
+    "updated_at": "2026-01-16T20:43:36.484Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 88,
+  "fields": {
+    "category": 3,
+    "name": "Honeyfern",
+    "slug": "honeyfern",
+    "description": "Adorable Honeyfern sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/honeyfern.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:36.497Z",
+    "updated_at": "2026-01-16T20:43:36.497Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 89,
+  "fields": {
+    "category": 3,
+    "name": "Littlecloud",
+    "slug": "littlecloud",
+    "description": "Adorable Littlecloud sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/littlecloud.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:37.437Z",
+    "updated_at": "2026-01-16T20:43:37.437Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 90,
+  "fields": {
+    "category": 1,
+    "name": "Foxleap character sheet",
+    "slug": "foxleap-character-sheet",
+    "description": "Adorable Foxleap character sheet sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "5.99",
+    "sale_price": null,
+    "image": "products/foxleap-character-sheet.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:37.448Z",
+    "updated_at": "2026-01-16T20:43:37.448Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 91,
+  "fields": {
+    "category": 3,
+    "name": "Wafflepelt",
+    "slug": "wafflepelt",
+    "description": "Adorable Wafflepelt sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/wafflepelt.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:37.476Z",
+    "updated_at": "2026-01-16T20:43:37.476Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 92,
+  "fields": {
+    "category": 3,
+    "name": "Longtail",
+    "slug": "longtail",
+    "description": "Adorable Longtail sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/longtail.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:37.489Z",
+    "updated_at": "2026-01-16T20:43:37.489Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 93,
+  "fields": {
+    "category": 3,
+    "name": "Graystripe",
+    "slug": "graystripe",
+    "description": "Adorable Graystripe sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/graystripe.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:38.522Z",
+    "updated_at": "2026-01-16T20:43:38.522Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 94,
+  "fields": {
+    "category": 3,
+    "name": "Blackstar",
+    "slug": "blackstar",
+    "description": "Adorable Blackstar sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/blackstar.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:39.334Z",
+    "updated_at": "2026-01-16T20:43:39.334Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 95,
+  "fields": {
+    "category": 2,
+    "name": "Brightheart and Cloudtail",
+    "slug": "brightheart-and-cloudtail",
+    "description": "Adorable Brightheart and Cloudtail sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "4.99",
+    "sale_price": null,
+    "image": "products/brightheart-and-cloudtail.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:39.344Z",
+    "updated_at": "2026-01-16T20:43:39.345Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 96,
+  "fields": {
+    "category": 3,
+    "name": "Purdy",
+    "slug": "purdy",
+    "description": "Adorable Purdy sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/purdy.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:40.376Z",
+    "updated_at": "2026-01-16T20:43:40.376Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 97,
+  "fields": {
+    "category": 2,
+    "name": "Jayfeather and Stick",
+    "slug": "jayfeather-and-stick",
+    "description": "Adorable Jayfeather and Stick sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "4.99",
+    "sale_price": null,
+    "image": "products/jayfeather-and-stick.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:40.388Z",
+    "updated_at": "2026-01-16T20:43:40.388Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 98,
+  "fields": {
+    "category": 3,
+    "name": "Mudfur",
+    "slug": "mudfur",
+    "description": "Adorable Mudfur sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/mudfur.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:40.403Z",
+    "updated_at": "2026-01-16T20:43:40.403Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 99,
+  "fields": {
+    "category": 3,
+    "name": "Mistystar",
+    "slug": "mistystar",
+    "description": "Adorable Mistystar sticker. Premium vinyl, waterproof, and durable. Perfect for laptops, water bottles, notebooks, and more!",
+    "price": "3.99",
+    "sale_price": null,
+    "image": "products/mistystar.png",
+    "additional_images": [],
+    "stock": 100,
+    "track_inventory": false,
+    "is_active": true,
+    "is_featured": false,
+    "created_at": "2026-01-16T20:43:40.426Z",
+    "updated_at": "2026-01-16T20:43:40.426Z"
+  }
+}
+]
