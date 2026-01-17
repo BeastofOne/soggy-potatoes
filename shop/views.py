@@ -812,6 +812,38 @@ def send_order_confirmation_email(order):
     except Exception as e:
         logger.error(f'Failed to send order confirmation email: {e}')
 
+    # Send notification to Joana (store owner)
+    send_order_notification_to_admin(order)
+
+
+def send_order_notification_to_admin(order):
+    """Send order notification email to store owner (Joana)."""
+    admin_email = 'kittytherese13@gmail.com'
+    subject = f'New Order! {order.order_number} - ${order.total}'
+
+    # Build admin URL
+    admin_url = f'https://soggy-potatoes.onrender.com/admin/shop/order/{order.pk}/change/'
+
+    # Render HTML email
+    html_message = render_to_string('shop/emails/order_notification_admin.html', {
+        'order': order,
+        'admin_url': admin_url,
+    })
+    plain_message = strip_tags(html_message)
+
+    try:
+        send_mail(
+            subject,
+            plain_message,
+            settings.DEFAULT_FROM_EMAIL if hasattr(settings, 'DEFAULT_FROM_EMAIL') else 'noreply@soggypotatoes.com',
+            [admin_email],
+            html_message=html_message,
+            fail_silently=True,
+        )
+        logger.info(f'Order notification sent to admin for {order.order_number}')
+    except Exception as e:
+        logger.error(f'Failed to send admin notification: {e}')
+
 
 @login_required
 def order_confirmation(request, order_number):

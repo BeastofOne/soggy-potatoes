@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfile, PetPhoto
+from .models import UserProfile, PetPhoto, ReservedUsername
 
 
 class PetPhotoInline(admin.TabularInline):
@@ -39,3 +39,9 @@ class PetPhotoAdmin(admin.ModelAdmin):
     list_filter = ['uploaded_at']
     search_fields = ['profile__user__username', 'caption']
     readonly_fields = ['uploaded_at']
+
+
+@admin.register(ReservedUsername)
+class ReservedUsernameAdmin(admin.ModelAdmin):
+    list_display = ['username', 'reason', 'created_at']
+    search_fields = ['username', 'reason']

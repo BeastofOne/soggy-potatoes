@@ -45,3 +45,16 @@ class PetPhoto(models.Model):
 
     class Meta:
         ordering = ['-uploaded_at']
+
+
+class ReservedUsername(models.Model):
+    """Usernames that cannot be registered."""
+    username = models.CharField(max_length=150, unique=True)
+    reason = models.CharField(max_length=200, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.username
+
+    class Meta:
+        ordering = ['username']

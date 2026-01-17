@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications - Soggy Potatoes{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2 mb-0"><i class="bi bi-bell"></i> Notifications</h1>
+                <div>
+                    <a href="{% url 'messaging:inbox' %}" class="btn btn-outline-secondary me-2">
+                        <i class="bi bi-envelope"></i> Messages
+                    </a>
+                    {% if notifications.exists %}
+                        <a href="{% url 'messaging:mark_all_read' %}" class="btn btn-outline-primary">
+                            <i class="bi bi-check-all"></i> Mark All Read
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if notifications %}
+            <div class="list-group">
+                {% for notification in notifications %}
+                <a href="{% url 'messaging:mark_notification_read' notification.pk %}"
+                   class="list-group-item list-group-item-action {% if not notification.is_read %}list-group-item-light{% endif %}">
+                    <div class="d-flex align-items-start">
+                        <!-- Icon -->
+                        <div class="me-3">
+                            {% if notification.notification_type == 'message' %}
+                                <span class="badge bg-primary rounded-circle p-2">
+                                    <i class="bi bi-envelope"></i>
+                                </span>
+                            {% elif notification.notification_type == 'order' %}
+                                <span class="badge bg-success rounded-circle p-2">
+                                    <i class="bi bi-bag"></i>
+                                </span>
+                            {% elif notification.notification_type == 'forum' %}
+                                <span class="badge bg-info rounded-circle p-2">
+                                    <i class="bi bi-chat-left-text"></i>
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary rounded-circle p-2">
+                                    <i class="bi bi-bell"></i>
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Content -->
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between">
+                                <strong {% if not notification.is_read %}class="text-primary"{% endif %}>
+                                    {{ notification.title }}
+                                </strong>
+                                <small class="text-muted">{{ notification.created_at|timesince }} ago</small>
+                            </div>
+                            <p class="mb-0 text-muted small">{{ notification.message|truncatewords:20 }}</p>
+                        </div>
+
+                        {% if not notification.is_read %}
+                            <span class="badge bg-primary rounded-pill ms-2">New</span>
+                        {% endif %}
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-bell-slash text-muted" style="font-size: 4rem;"></i>
+                    <h4 class="mt-3">No notifications</h4>
+                    <p class="text-muted">You're all caught up!</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

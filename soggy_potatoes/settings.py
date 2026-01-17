@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'shop.apps.ShopConfig',
     'forum.apps.ForumConfig',
     'users.apps.UsersConfig',
+    'messaging.apps.MessagingConfig',
 ]
 
 # Add debug toolbar in development

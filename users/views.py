@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -8,17 +8,18 @@ from django.views.generic import CreateView, TemplateView
 from django.urls import reverse_lazy
 
 from .models import UserProfile, PetPhoto
+from .forms import CustomUserCreationForm
 
 
 class RegisterView(CreateView):
     """User registration view."""
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm
     template_name = 'users/register.html'
     success_url = reverse_lazy('users:login')
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        messages.success(self.request, 'Account created successfully! Please log in.')
+        messages.success(self.request, 'Account created successfully! Check your email for a welcome message.')
         return response
 
     def dispatch(self, request, *args, **kwargs):

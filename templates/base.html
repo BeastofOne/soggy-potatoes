@@ -93,12 +93,31 @@
                         </a>
                     </li>
                     {% if user.is_authenticated %}
+                        <!-- Messages Icon -->
+                        <li class="nav-item">
+                            <a class="nav-link position-relative" href="{% url 'messaging:inbox' %}">
+                                <i class="bi bi-envelope"></i>
+                                <span class="message-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
+                                    0
+                                </span>
+                            </a>
+                        </li>
+                        <!-- Notifications Icon -->
+                        <li class="nav-item">
+                            <a class="nav-link position-relative" href="{% url 'messaging:notifications' %}">
+                                <i class="bi bi-bell"></i>
+                                <span class="notification-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
+                                    0
+                                </span>
+                            </a>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-person-circle"></i> {{ user.username }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="{% url 'users:profile' %}"><i class="bi bi-person"></i> Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'messaging:inbox' %}"><i class="bi bi-envelope"></i> Messages</a></li>
                                 <li><a class="dropdown-item" href="{% url 'shop:order_history' %}"><i class="bi bi-bag"></i> My Orders</a></li>
                                 {% if user.is_staff %}
                                     <li><hr class="dropdown-divider"></li>
@@ -165,9 +184,8 @@
                 <div class="col-md-4 mb-3">
                     <h6>Connect</h6>
                     <div class="d-flex gap-3">
-                        <a href="#" class="text-muted"><i class="bi bi-instagram fs-4"></i></a>
-                        <a href="#" class="text-muted"><i class="bi bi-twitter-x fs-4"></i></a>
-                        <a href="#" class="text-muted"><i class="bi bi-tiktok fs-4"></i></a>
+                        <a href="https://www.instagram.com/soggypootatoes/" target="_blank" rel="noopener noreferrer" class="text-muted"><i class="bi bi-instagram fs-4"></i></a>
+                        <a href="https://www.tiktok.com/@soggypootatoes" target="_blank" rel="noopener noreferrer" class="text-muted"><i class="bi bi-tiktok fs-4"></i></a>
                     </div>
                 </div>
             </div>
@@ -180,6 +198,42 @@
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% if user.is_authenticated %}
+    <script>
+    // Poll for notification counts
+    function updateNotificationBadges() {
+        fetch('{% url "messaging:notification_count" %}')
+            .then(response => response.json())
+            .then(data => {
+                // Update notification badge
+                const notifBadge = document.querySelector('.notification-badge');
+                if (notifBadge) {
+                    if (data.count > 0) {
+                        notifBadge.textContent = data.count > 99 ? '99+' : data.count;
+                        notifBadge.classList.remove('d-none');
+                    } else {
+                        notifBadge.classList.add('d-none');
+                    }
+                }
+                // Update message badge
+                const msgBadge = document.querySelector('.message-badge');
+                if (msgBadge) {
+                    if (data.unread_messages > 0) {
+                        msgBadge.textContent = data.unread_messages > 99 ? '99+' : data.unread_messages;
+                        msgBadge.classList.remove('d-none');
+                    } else {
+                        msgBadge.classList.add('d-none');
+                    }
+                }
+            })
+            .catch(err => console.log('Notification poll error:', err));
+    }
+    // Poll every 30 seconds
+    updateNotificationBadges();
+    setInterval(updateNotificationBadges, 30000);
+    </script>
+    {% endif %}
 
     {% block extra_js %}{% endblock %}
 </body>

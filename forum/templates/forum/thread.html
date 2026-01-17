@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load forum_tags %}
+{% load user_tags %}
 
 {% block title %}{{ thread.title }} - Forum - Soggy Potatoes{% endblock %}
 
@@ -30,7 +31,7 @@
                         {{ thread.title }}
                     </h1>
                     <p class="text-muted mb-0">
-                        Started by <a href="{% url 'users:public_profile' thread.author.username %}" class="text-decoration-none"><strong>{{ thread.author.username }}</strong></a>
+                        Started by <a href="{% url 'users:public_profile' thread.author.username %}" class="text-decoration-none"><strong>{{ thread.author.username }}</strong></a>{% admin_badge thread.author %}
                         on {{ thread.created_at|date:"F d, Y" }}
                         | {{ thread.views }} views | {{ thread.reply_count }} replies
                     </p>
@@ -106,7 +107,7 @@
                 <div class="col">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>
-                            <a href="{% url 'users:public_profile' post.author.username %}" class="text-decoration-none"><strong>{{ post.author.username }}</strong></a>
+                            <a href="{% url 'users:public_profile' post.author.username %}" class="text-decoration-none"><strong>{{ post.author.username }}</strong></a>{% admin_badge post.author %}
                             {% if post.author == thread.author %}
                                 <span class="badge bg-primary ms-1">OP</span>
                             {% endif %}
