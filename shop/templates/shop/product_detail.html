@@ -82,7 +82,11 @@
         <!-- Stock Status -->
         <div class="mb-4">
             {% if product.in_stock %}
-                <span class="badge bg-success"><i class="bi bi-check-circle"></i> In Stock ({{ product.stock }} available)</span>
+                {% if product.track_inventory %}
+                    <span class="badge bg-success"><i class="bi bi-check-circle"></i> In Stock ({{ product.stock }} available)</span>
+                {% else %}
+                    <span class="badge bg-success"><i class="bi bi-check-circle"></i> In Stock</span>
+                {% endif %}
             {% else %}
                 <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Out of Stock</span>
             {% endif %}
@@ -104,10 +108,8 @@
                     </div>
                     <div class="col-auto">
                         <select name="quantity" id="quantity" class="form-select" style="width: 80px;">
-                            {% for i in "12345"|make_list %}
-                                {% if forloop.counter <= product.stock %}
-                                    <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
-                                {% endif %}
+                            {% for i in product.quantity_choices %}
+                                <option value="{{ i }}">{{ i }}</option>
                             {% endfor %}
                         </select>
                     </div>

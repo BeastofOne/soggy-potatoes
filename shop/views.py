@@ -340,6 +340,9 @@ def get_or_create_cart(request):
             request.session.create()
             session_key = request.session.session_key
         cart, created = Cart.objects.get_or_create(session_key=session_key)
+        # Remember the cart across login's session-key rotation so
+        # shop.signals.merge_session_cart can find it.
+        request.session['cart_id'] = cart.id
     return cart
 
 
@@ -355,11 +358,13 @@ def add_to_cart(request, product_id):
     """Add a product to the cart."""
     product = get_object_or_404(Product, pk=product_id, is_active=True)
     cart = get_or_create_cart(request)
-    quantity = int(request.POST.get('quantity', 1))
+    try:
+        quantity = int(request.POST.get('quantity', 1))
+    except (TypeError, ValueError):
+        quantity = 1
 
-    # Check stock
-    if quantity > product.stock:
-        messages.error(request, f'Sorry, only {product.stock} items available.')
+    if not product.can_fulfill(quantity):
+        messages.error(request, f'Sorry, only {product.max_order_quantity} available right now.')
         return redirect('shop:product_detail', slug=product.slug)
 
     cart_item, created = CartItem.objects.get_or_create(
@@ -370,8 +375,8 @@ def add_to_cart(request, product_id):
 
     if not created:
         new_quantity = cart_item.quantity + quantity
-        if new_quantity > product.stock:
-            messages.error(request, f'Sorry, only {product.stock} items available.')
+        if not product.can_fulfill(new_quantity):
+            messages.error(request, f'Sorry, only {product.max_order_quantity} available right now.')
             return redirect('shop:product_detail', slug=product.slug)
         cart_item.quantity = new_quantity
         cart_item.save()
@@ -395,13 +400,16 @@ def update_cart(request, item_id):
     """Update cart item quantity."""
     cart = get_or_create_cart(request)
     cart_item = get_object_or_404(CartItem, pk=item_id, cart=cart)
-    quantity = int(request.POST.get('quantity', 1))
+    try:
+        quantity = int(request.POST.get('quantity', 1))
+    except (TypeError, ValueError):
+        quantity = 1
 
     if quantity <= 0:
         cart_item.delete()
         messages.info(request, 'Item removed from cart.')
-    elif quantity > cart_item.product.stock:
-        messages.error(request, f'Sorry, only {cart_item.product.stock} items available.')
+    elif not cart_item.product.can_fulfill(quantity):
+        messages.error(request, f'Sorry, only {cart_item.product.max_order_quantity} available right now.')
     else:
         cart_item.quantity = quantity
         cart_item.save()
@@ -538,10 +546,10 @@ def checkout_view(request):
 
     # Check stock for all items
     for item in cart.items.all():
-        if item.quantity > item.product.stock:
+        if not item.product.can_fulfill(item.quantity):
             messages.error(
                 request,
-                f'Sorry, only {item.product.stock} of "{item.product.name}" available. Please update your cart.'
+                f'Sorry, only {item.product.max_order_quantity} of "{item.product.name}" available. Please update your cart.'
             )
             return redirect('shop:cart')
 
@@ -591,8 +599,8 @@ def checkout_view(request):
             # Store order ID in session for later reference
             request.session['pending_order_id'] = order.id
 
-            # Check if Stripe keys are configured
-            if settings.STRIPE_SECRET_KEY and not settings.STRIPE_SECRET_KEY.startswith('pk_test_placeholder'):
+            # Check if Stripe keys are configured (placeholder keys mean dev mode)
+            if settings.STRIPE_SECRET_KEY and 'placeholder' not in settings.STRIPE_SECRET_KEY:
                 # Create Stripe Checkout Session
                 try:
                     success_url = request.build_absolute_uri(
@@ -625,8 +633,7 @@ def checkout_view(request):
 
                 # Reduce stock
                 for cart_item in cart.items.all():
-                    cart_item.product.stock -= cart_item.quantity
-                    cart_item.product.save()
+                    cart_item.product.reduce_stock(cart_item.quantity)
 
                 # Clear cart
                 cart.items.all().delete()
@@ -676,8 +683,7 @@ def payment_success(request):
             # Reduce stock
             for item in order.items.all():
                 if item.product:
-                    item.product.stock -= item.quantity
-                    item.product.save()
+                    item.product.reduce_stock(item.quantity)
 
             # Clear cart
             cart = get_or_create_cart(request)
@@ -766,8 +772,7 @@ def handle_successful_payment(session):
             # Reduce stock
             for item in order.items.all():
                 if item.product:
-                    item.product.stock -= item.quantity
-                    item.product.save()
+                    item.product.reduce_stock(item.quantity)
 
             # Send confirmation email
             send_order_confirmation_email(order)

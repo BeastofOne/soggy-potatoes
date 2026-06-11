@@ -221,6 +221,38 @@ class Product(models.Model):
             return True  # Always available unless inventory tracking is enabled
         return self.stock > 0
 
+    # Per-line-item cap so made-to-order products still get a sane quantity dropdown
+    MAX_ORDER_QUANTITY = 10
+
+    def can_fulfill(self, quantity):
+        """Whether an order of `quantity` can be fulfilled.
+
+        Made-to-order products (track_inventory=False) can always be fulfilled.
+        """
+        if quantity < 1:
+            return False
+        if not self.track_inventory:
+            return quantity <= self.MAX_ORDER_QUANTITY
+        return quantity <= self.stock
+
+    @property
+    def max_order_quantity(self):
+        """Maximum quantity a customer can order in one line item."""
+        if not self.track_inventory:
+            return self.MAX_ORDER_QUANTITY
+        return min(self.stock, self.MAX_ORDER_QUANTITY)
+
+    @property
+    def quantity_choices(self):
+        """Range of selectable quantities for templates."""
+        return range(1, self.max_order_quantity + 1)
+
+    def reduce_stock(self, quantity):
+        """Decrement stock after a sale, only when inventory tracking is on."""
+        if self.track_inventory:
+            self.stock = max(self.stock - quantity, 0)
+            self.save(update_fields=['stock'])
+
     @property
     def discount_percent(self):
         """Calculate discount percentage."""

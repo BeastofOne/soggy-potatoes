@@ -59,12 +59,10 @@
                                                 {% csrf_token %}
                                                 <select name="quantity" class="form-select form-select-sm d-inline-block"
                                                         style="width: 70px;" onchange="this.form.submit()">
-                                                    {% for i in "123456789"|make_list %}
-                                                        {% if forloop.counter <= item.product.stock %}
-                                                            <option value="{{ forloop.counter }}" {% if item.quantity == forloop.counter %}selected{% endif %}>
-                                                                {{ forloop.counter }}
-                                                            </option>
-                                                        {% endif %}
+                                                    {% for i in item.product.quantity_choices %}
+                                                        <option value="{{ i }}" {% if item.quantity == i %}selected{% endif %}>
+                                                            {{ i }}
+                                                        </option>
                                                     {% endfor %}
                                                 </select>
                                             </form>

@@ -153,25 +153,36 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']  # Project-level static files
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # For collectstatic in production
 
-# WhiteNoise configuration for production static files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 # Media files (user uploads)
 # In production, use Cloudinary for persistent storage
 # In development, use local filesystem
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Django 5.1+ removed DEFAULT_FILE_STORAGE/STATICFILES_STORAGE; STORAGES is
+# the only setting the file storage system reads now.
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        # Manifest storage needs collectstatic to have run, so only use it
+        # in production; plain storage keeps local dev and tests working.
+        'BACKEND': (
+            'django.contrib.staticfiles.storage.StaticFilesStorage'
+            if DEBUG
+            else 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+        ),
+    },
+}
+
 if os.getenv('CLOUDINARY_URL'):
-    # Cloudinary is configured - use it for media storage
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    MEDIA_URL = '/media/'  # This will be overridden by Cloudinary URLs
+    STORAGES['default']['BACKEND'] = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
     # Cloudinary configuration (parsed from CLOUDINARY_URL env var)
     import cloudinary
     # CLOUDINARY_URL format: cloudinary://API_KEY:API_SECRET@CLOUD_NAME
     cloudinary.config(secure=True)
-else:
-    # Local development - use filesystem
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Default primary key field type

@@ -10,7 +10,10 @@ from django.http import JsonResponse, HttpResponseForbidden
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils import timezone
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.core.paginator import Paginator
+
+from shop.uploads import validate_image_upload
 
 from .models import UserProfile, PetPhoto, Badge, UserBadge, UserBan, PostReport
 from .forms import CustomUserCreationForm
@@ -55,9 +58,11 @@ def login_view(request):
             login(request, user)
             messages.success(request, f'Welcome back, {user.username}!')
 
-            # Redirect to 'next' parameter or home
-            next_url = request.GET.get('next', 'shop:home')
-            return redirect(next_url)
+            # Redirect to 'next' parameter (if it's a safe local URL) or home
+            next_url = request.POST.get('next') or request.GET.get('next')
+            if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+                return redirect(next_url)
+            return redirect('shop:home')
         else:
             messages.error(request, 'Invalid username or password.')
     else:
@@ -132,13 +137,22 @@ def edit_profile_view(request):
 
         # Handle avatar upload
         if 'avatar' in request.FILES:
-            profile.avatar = request.FILES['avatar']
+            avatar = request.FILES['avatar']
+            error = validate_image_upload(avatar)
+            if error:
+                messages.error(request, error)
+                return redirect('users:edit_profile')
+            profile.avatar = avatar
 
         profile.save()
 
         # Handle pet photo uploads
         pet_photos = request.FILES.getlist('pet_photos')
         for photo in pet_photos[:6]:  # Limit to 6 photos at a time
+            error = validate_image_upload(photo)
+            if error:
+                messages.error(request, error)
+                continue
             caption = request.POST.get('photo_caption', '')
             PetPhoto.objects.create(
                 profile=profile,
@@ -211,6 +225,19 @@ def admin_products(request):
             is_active = request.POST.get('is_active') == 'on'
             is_featured = request.POST.get('is_featured') == 'on'
 
+            if not name or not price:
+                messages.error(request, 'Product name and price are required.')
+                return redirect('users:admin_products')
+
+            image = request.FILES.get('image')
+            if not image:
+                messages.error(request, 'Please choose an image for the product.')
+                return redirect('users:admin_products')
+            error = validate_image_upload(image)
+            if error:
+                messages.error(request, error)
+                return redirect('users:admin_products')
+
             product = Product(
                 name=name,
                 description=description,
@@ -218,12 +245,11 @@ def admin_products(request):
                 stock=int(stock) if stock else 0,
                 track_inventory=track_inventory,
                 is_active=is_active,
-                is_featured=is_featured
+                is_featured=is_featured,
+                image=image,
             )
             if category_id:
                 product.category = Category.objects.get(pk=category_id)
-            if 'image' in request.FILES:
-                product.image = request.FILES['image']
             product.save()
             messages.success(request, f'Product "{name}" created successfully!')
 
@@ -245,7 +271,12 @@ def admin_products(request):
                 product.category = None
 
             if 'image' in request.FILES:
-                product.image = request.FILES['image']
+                image = request.FILES['image']
+                error = validate_image_upload(image)
+                if error:
+                    messages.error(request, error)
+                    return redirect('users:admin_products')
+                product.image = image
 
             # Handle sale price
             sale_price = request.POST.get('sale_price')
@@ -284,10 +315,15 @@ def admin_badges(request):
             name = request.POST.get('name')
             description = request.POST.get('description', '')
             if 'image' in request.FILES:
+                image = request.FILES['image']
+                error = validate_image_upload(image)
+                if error:
+                    messages.error(request, error)
+                    return redirect('users:admin_badges')
                 Badge.objects.create(
                     name=name,
                     description=description,
-                    image=request.FILES['image'],
+                    image=image,
                     created_by=request.user
                 )
                 messages.success(request, f'Badge "{name}" created!')

@@ -77,12 +77,56 @@ class ProductModelTest(TestCase):
         self.product.save()
         self.assertTrue(self.product.is_on_sale)
 
-    def test_in_stock(self):
-        """Test in_stock property."""
+    def test_in_stock_made_to_order(self):
+        """Products that don't track inventory are always in stock."""
+        self.product.track_inventory = False
+        self.product.stock = 0
+        self.product.save()
+        self.assertTrue(self.product.in_stock)
+
+    def test_in_stock_tracked(self):
+        """Products that track inventory follow the stock count."""
+        self.product.track_inventory = True
+        self.product.save()
         self.assertTrue(self.product.in_stock)
         self.product.stock = 0
         self.product.save()
         self.assertFalse(self.product.in_stock)
+
+    def test_can_fulfill_made_to_order(self):
+        """Made-to-order products accept any quantity up to the per-order cap."""
+        self.product.track_inventory = False
+        self.product.stock = 0
+        self.product.save()
+        self.assertTrue(self.product.can_fulfill(1))
+        self.assertTrue(self.product.can_fulfill(Product.MAX_ORDER_QUANTITY))
+        self.assertFalse(self.product.can_fulfill(Product.MAX_ORDER_QUANTITY + 1))
+        self.assertFalse(self.product.can_fulfill(0))
+
+    def test_can_fulfill_tracked(self):
+        """Tracked products are limited by stock."""
+        self.product.track_inventory = True
+        self.product.stock = 3
+        self.product.save()
+        self.assertTrue(self.product.can_fulfill(3))
+        self.assertFalse(self.product.can_fulfill(4))
+
+    def test_reduce_stock_only_when_tracked(self):
+        """reduce_stock decrements tracked products and ignores made-to-order ones."""
+        self.product.track_inventory = True
+        self.product.stock = 5
+        self.product.save()
+        self.product.reduce_stock(2)
+        self.assertEqual(self.product.stock, 3)
+        # Never goes negative
+        self.product.reduce_stock(10)
+        self.assertEqual(self.product.stock, 0)
+
+        self.product.track_inventory = False
+        self.product.stock = 5
+        self.product.save()
+        self.product.reduce_stock(2)
+        self.assertEqual(self.product.stock, 5)
 
 
 class CartModelTest(TestCase):
@@ -268,6 +312,82 @@ class ViewsTest(TestCase):
         response = self.client.get(reverse('shop:search'), {'q': 'sticker'})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Test Sticker')
+
+
+class MadeToOrderPurchaseTest(TestCase):
+    """A stock=0 made-to-order product must be purchasable end to end."""
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='buyer', email='buyer@example.com', password='testpass123'
+        )
+        self.product = Product.objects.create(
+            name='Made To Order Sticker',
+            slug='made-to-order-sticker',
+            description='Printed when you order it',
+            price=Decimal('3.99'),
+            stock=0,
+            track_inventory=False,
+            is_active=True,
+        )
+
+    def test_add_to_cart_with_zero_stock(self):
+        """Adding a made-to-order product to the cart succeeds despite stock=0."""
+        response = self.client.post(
+            reverse('shop:add_to_cart', kwargs={'product_id': self.product.id}),
+            {'quantity': 2}
+        )
+        self.assertEqual(response.status_code, 302)
+        cart = Cart.objects.get(session_key=self.client.session.session_key)
+        self.assertEqual(cart.total_items, 2)
+
+    def test_checkout_with_zero_stock(self):
+        """Checkout page loads for a cart holding made-to-order items."""
+        self.client.login(username='buyer', password='testpass123')
+        self.client.post(
+            reverse('shop:add_to_cart', kwargs={'product_id': self.product.id}),
+            {'quantity': 1}
+        )
+        response = self.client.get(reverse('shop:checkout'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_quantity_dropdown_rendered(self):
+        """Product page shows quantity options for made-to-order products."""
+        response = self.client.get(
+            reverse('shop:product_detail', kwargs={'slug': self.product.slug})
+        )
+        self.assertContains(response, '<option value="1">')
+
+
+class CartMergeOnLoginTest(TestCase):
+    """Guest carts must survive logging in at checkout."""
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='shopper', email='shopper@example.com', password='testpass123'
+        )
+        self.product = Product.objects.create(
+            name='Merge Sticker',
+            slug='merge-sticker',
+            description='test',
+            price=Decimal('2.99'),
+            track_inventory=False,
+            is_active=True,
+        )
+
+    def test_guest_cart_merges_into_user_cart(self):
+        self.client.post(
+            reverse('shop:add_to_cart', kwargs={'product_id': self.product.id}),
+            {'quantity': 2}
+        )
+        self.client.login(username='shopper', password='testpass123')
+
+        user_cart = Cart.objects.get(user=self.user)
+        self.assertEqual(user_cart.total_items, 2)
+        # Guest cart is gone
+        self.assertFalse(Cart.objects.filter(user__isnull=True).exists())
 
 
 class WishlistTest(TestCase):

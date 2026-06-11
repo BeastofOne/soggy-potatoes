@@ -46,8 +46,16 @@ STRIPE_SECRET_KEY=<stripe secret key>
 
 **Build Command:**
 ```
-pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && python manage.py loaddata fixtures/products.json
+pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && python manage.py seed_products
 ```
+
+> ⚠️ `seed_products` replaces the old `loaddata fixtures/products.json` step (June 2026).
+> The old command re-loaded the fixture on EVERY deploy, silently reverting any product
+> edits Joana made (names, prices, images for products 1-99). `seed_products` only loads
+> the seed fixture (now at `fixtures/products_seed.json`) when the product table is empty.
+> **The Render dashboard build command should be updated by hand to match the line above**
+> (or set to `./build.sh`). Until then it is harmless: `fixtures/products.json` is now an
+> intentionally empty file, so the old `loaddata` step is a no-op (see fixtures/README.md).
 
 **Start Command:**
 ```
@@ -81,7 +89,8 @@ soggy-potatoes/
 │   ├── css/style.css        # Main stylesheet (pastel purple theme)
 │   └── img/                 # Images including favicon
 ├── fixtures/                # Database fixtures
-│   └── products.json        # 99 products + 3 categories
+│   ├── products_seed.json   # 99 products + 3 categories (loaded by seed_products)
+│   └── products.json        # intentionally empty no-op (see fixtures/README.md)
 ├── requirements.txt         # Python dependencies
 └── build.sh                 # Build script (optional)
 ```
@@ -159,7 +168,12 @@ soggy-potatoes/
 ### Image Storage
 - Uses Cloudinary when `CLOUDINARY_URL` env var is set
 - Falls back to local storage in development
-- Configured in `settings.py` with `django-cloudinary-storage`
+- Configured in `settings.py` via the `STORAGES` dict (Django 5.1+ removed the old
+  `DEFAULT_FILE_STORAGE`/`STATICFILES_STORAGE` settings — they were silently ignored,
+  which is why uploads used to disappear on Render; fixed June 2026)
+- Cloudinary public IDs must be `media/<path-without-extension>` to match the URLs
+  django-cloudinary-storage generates; `sync_to_cloudinary` handles this
+- Uploads are validated (JPEG/PNG/GIF/WebP, max 10MB = Cloudinary free-tier limit)
 
 ### User Badges
 - Stored in UserProfile or session
@@ -186,7 +200,7 @@ python -m venv venv
 source venv/bin/activate  # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
 python manage.py migrate
-python manage.py loaddata fixtures/products.json
+python manage.py seed_products
 python manage.py runserver
 ```
 
@@ -199,7 +213,7 @@ python manage.py runserver
 python manage.py createsuperuser
 
 # Export products to fixture
-python manage.py dumpdata shop.Category shop.Product --indent 2 > fixtures/products.json
+python manage.py dumpdata shop.Category shop.Product --indent 2 > fixtures/products_seed.json
 
 # Sync images to Cloudinary (if needed)
 python manage.py sync_to_cloudinary
@@ -251,6 +265,26 @@ python manage.py import_stickers --source /path/to/images/
 ---
 
 ## Recent Changes Log
+
+### June 2026 — Overhaul
+- **Fixed media storage**: Django 5.2 ignores `DEFAULT_FILE_STORAGE`; switched to the
+  `STORAGES` setting so Cloudinary is actually used in production (uploads previously
+  went to Render's ephemeral disk and vanished on redeploy)
+- **Fixed unbuyable shop**: cart/checkout/quantity dropdowns required `stock > 0` even
+  for made-to-order products (`track_inventory=False`); now respect `track_inventory`
+  with a per-line cap of 10 (`Product.MAX_ORDER_QUANTITY`)
+- **Fixed deploy clobbering**: new `seed_products` command loads the fixture only when
+  the product table is empty (Render build command must be updated by hand)
+- **Synced all 99 product images to Cloudinary** under the correct `media/products/...`
+  public IDs; rewrote `sync_to_cloudinary` to match the storage backend's URL scheme
+- **Fixed Stripe dev-mode detection**: was comparing the secret key against a
+  `pk_test_...` prefix, so placeholder keys hit real Stripe and errored at checkout
+- **Added upload validation**: type/size/integrity checks (`shop/uploads.py`) on product,
+  badge, avatar, and pet-photo uploads — friendly errors instead of crashes
+- **Guest carts now survive login**: session cart merges into the account cart
+  (`shop/signals.py`); previously items vanished when logging in at checkout
+- **Login `next` redirect validated** against the request host (open-redirect fix)
+- Whitenoise manifest static storage active in production only (tests/dev use plain)
 
 ### January 2025
 - Added `track_inventory` field to fix "Out of Stock" issue

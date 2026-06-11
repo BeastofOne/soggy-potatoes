@@ -11,5 +11,5 @@ python manage.py collectstatic --no-input
 # Run migrations
 python manage.py migrate
 
-# Load product data (only adds new items, won't duplicate)
-python manage.py loaddata fixtures/products.json || echo "Fixture loading skipped or already loaded"
+# Seed products on first deploy only — never overwrites live product edits
+python manage.py seed_products
